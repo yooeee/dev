@@ -36,52 +36,55 @@
 
         </div>
         <!-- 지역별 드롭다운 -->
-        <div class="filter-group">
-            <button class="button-active " onclick="toggleDropdown('locationDropdown', this)">지역별</button>
-            <div id="locationDropdown" class="filter-dropdown">
-                <select class="form-select" id="sido" title="시/도">
-                    <option value="" disabled selected>시/도</option>
-                    <option value="">전체</option>
-                    <option value="all">내 반경</option>
-                    <option value="11">서울특별시</option>
-                    <option value="26">부산광역시</option>
-                    <option value="27">대구광역시</option>
-                    <option value="28">인천광역시</option>
-                    <option value="29">광주광역시</option>
-                    <option value="30">대전광역시</option>
-                    <option value="31">울산광역시</option>
-                    <option value="41">경기도</option>
-                    <option value="51">강원특별자치도</option>
-                    <option value="43">충청북도</option>
-                    <option value="44">충청남도</option> 
-                    <option value="45">전라북도</option>
-                    <option value="46">전라남도</option>
-                    <option value="47">경상북도</option>
-                    <option value="48">경상남도</option>
-                    <option value="50">제주특별자치도</option>
-                </select>
-                <select class="form-select">
-                    <option value="">시/군/구</option>
-                    <option value="gangnam">강남구</option>
-                    <option value="yongsan">용산구</option>
-                    <option value="jongno">종로구</option>
-                </select>
-                <button onclick="toggleDropdown('locationDropdown', this)">확인</button>
+        <div class="filter-body">
+            <div class="filter-group">
+                <button class="button-active " onclick="toggleDropdown('locationDropdown', this)">지역별</button>
+                <button onclick="toggleDropdown('categoryDropdown', this)">카테고리</button>
             </div>
-            <button onclick="toggleDropdown('categoryDropdown', this)">카테고리</button>
-            <div id="categoryDropdown" class="filter-dropdown">
-                <div class="checkbox-group">
-                    <label><input type="checkbox" value="korean"> 한식</label><br>
-                    <label><input type="checkbox" value="chinese"> 중식</label><br>
-                    <label><input type="checkbox" value="japanese"> 일식</label><br>
-                    <label><input type="checkbox" value="wes tern"> 양식</label><br>
-                    <label><input type="checkbox" value="vegan"> 채식</label>
-                    <!-- 여기에 더 많은 카테고리 체크박스 추가 가능 -->
+            <div class="filter-options">
+                <div id="locationDropdown" class="filter-dropdown" >
+                    <select class="form-select" id="sido" title="시/도">
+                        <option value="" disabled selected>시/도</option>
+                        <option value="">전체</option>
+                        <option value="all">내 반경</option>
+                        <option value="11">서울특별시</option>
+                        <option value="26">부산광역시</option>
+                        <option value="27">대구광역시</option>
+                        <option value="28">인천광역시</option>
+                        <option value="29">광주광역시</option>
+                        <option value="30">대전광역시</option>
+                        <option value="31">울산광역시</option>
+                        <option value="41">경기도</option>
+                        <option value="51">강원특별자치도</option>
+                        <option value="43">충청북도</option>
+                        <option value="44">충청남도</option>
+                        <option value="45">전라북도</option>
+                        <option value="46">전라남도</option>
+                        <option value="47">경상북도</option>
+                        <option value="48">경상남도</option>
+                        <option value="50">제주특별자치도</option>
+                    </select>
+                    <select class="form-select">
+                        <option value="" disabled selected>시/군/구</option>
+                        <option value="gangnam">강남구</option>
+                        <option value="yongsan">용산구</option>
+                        <option value="jongno">종로구</option>
+                    </select>
                 </div>
-                <button onclick="toggleDropdown('categoryDropdown', this)">확인</button>
+                <div id="categoryDropdown" class="filter-dropdown" style="display: none;">
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" value="korean"> 한식</label><br>
+                        <label><input type="checkbox" value="chinese"> 중식</label><br>
+                        <label><input type="checkbox" value="japanese"> 일식</label><br>
+                        <label><input type="checkbox" value="wes tern"> 양식</label><br>
+                        <label><input type="checkbox" value="vegan"> 채식</label>
+                        <!-- 여기에 더 많은 카테고리 체크박스 추가 가능 -->
+                    </div>
+                </div>
             </div>
-            
-            </div>
+
+        </div>
+        
 
         <!-- 검색 결과 -->
         <div class="search-results">
@@ -133,8 +136,8 @@
                 <span class="page-number">1</span>
                 <button class="next-button">다음</button>
             </div>
-            
-           
+
+
         </div>
 
 
@@ -144,7 +147,16 @@
     <div id="address-info" class="address-info">현재 위치 조회</div>
 
 
-    
+
 </body>
+
+
+<template>
+    <div class="search-item">
+        <p class="restaurant-name">식당 이름 1</p>
+        <p>주소: 서울특별시 강남구 어딘가 1</p>
+    </div>
+
+</template>
 
 </html>

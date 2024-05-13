@@ -68,34 +68,7 @@ function updateLocation(map) {
           }),
         }),
       });
-  // OpenLayers에서 좌표 변환을 실행합니다.
-const EPSG2097Coords = [14103867.50811241, 4498515.765753104]; // 예시 좌표
-let transformedCoords = ol.proj.transform(EPSG2097Coords, 'EPSG:2097', 'EPSG:3857'); // EPSG:3857 (Web Mercator)로 변환
-transformedCoords = [14111211.895803934,4532448.561538269];
-   // 지도 뷰를 변환된 좌표로 이동
-   map.getView().setCenter(transformedCoords);
-   map.getView().setZoom(14); // 좀 더 가까이에서 보기
 
-  // 벡터 소스와 벡터 레이어 생성
-const vectorSource2 = new ol.source.Vector({
-  features: [
-      new ol.Feature({
-          geometry: new ol.geom.Point(transformedCoords)
-      })
-  ]
-});
-
-let vectorLayer2 = new ol.layer.Vector({
-  source: vectorSource2,  // 여기서 vectorSource 대신 vectorSource2를 참조해야 합니다.
-  style: new ol.style.Style({
-      image: new ol.style.Circle({
-          radius: 10,
-          fill: new ol.style.Fill({ color: 'red' }), // 포인트 색
-          stroke: new ol.style.Stroke({ color: 'yellow', width: 2 }) // 포인트 테두리
-      })
-  })
-});
-      map.addLayer(vectorLayer2);
       map.addLayer(vectorLayer);
 
       
