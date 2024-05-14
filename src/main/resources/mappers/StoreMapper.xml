@@ -11,7 +11,39 @@
                     #{cate}
                 </foreach>
             </if>
-            <!-- TODO 시군구, 내거리 옵션 -->
+            <if test='type1 != ""'> </if>
+            <if test='type2 != ""'> </if>
+            <!-- TODO 시군구 조건일때 -->
         </where>
     </select>
+
+
+    <select id="selectOneStoreListCount" parameterType="com.store.dev.dto.SearchDTO" resultType="int">
+        SELECT count(*)
+        FROM store 
+        <where>
+            <if test='keyword != null'>name like CONCAT('%',#{keyword},'%')</if> 
+            <if test='category != null and category.size() > 0'>
+                <foreach collection="category" item="cate" separator="," open="(" close=")">
+                    #{cate}
+                </foreach>
+            </if>
+            <!-- TODO 시군구 조건일때-->
+        </where>
+    </select>
+
+
+    <!-- TODO 내반경, 거리(M) 조건일때 쿼리작성 -->
+    <select id="selectOneStoreListByLocation" parameterType="com.store.dev.dto.SearchRadiusDTO" resultType="int">
+        SELECT jibeon, doro, name, category, lon, lat
+        FROM store
+        WHERE ST_DWithin(
+            ST_SetSRID(ST_MakePoint(lon, lat), 3857),
+            ST_SetSRID(ST_MakePoint(#{lon}, #{lat}), 3857),
+            #{radius}
+        );
+    </select>
+
+
+
 </mapper>

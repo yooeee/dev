@@ -27,12 +27,12 @@
         <h2>LOGO</h2>
         <!-- 검색창 -->
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search...">
+            <input id="keyword" type="text" class="search-input" placeholder="Search...">
             <!-- 검색 버튼 이미지 -->
-            <img th:src="@{/img/search.png}" alt="검색" style="cursor: pointer; width: 24px; height: 24px;">
+            <img id="searchBtn" th:src="@{/img/search.png}" alt="검색" style="cursor: pointer; width: 24px; height: 24px;">
 
             <!-- 초기화 버튼 이미지 -->
-            <img th:src="@{/img/reset.png}" alt="초기화" style="cursor: pointer; width: 24px; height: 24px;">
+            <img id="resetBtn" th:src="@{/img/reset.png}" alt="초기화" style="cursor: pointer; width: 24px; height: 24px;">
 
         </div>
         <!-- 지역별 드롭다운 -->
@@ -42,8 +42,8 @@
                 <button onclick="toggleDropdown('categoryDropdown', this)">종류별</button>
             </div>
             <div class="filter-options">
-                <div id="locationDropdown" class="filter-dropdown" >
-                    <select class="form-select" id="sido" title="시/도">
+                <div id="locationDropdown" class="filter-dropdown">
+                    <select class="form-select" id="type1" title="시/도">
                         <option value="" disabled selected>시/도</option>
                         <option value="">전체</option>
                         <option value="all">내 반경</option>
@@ -64,7 +64,7 @@
                         <option value="48">경상남도</option>
                         <option value="50">제주특별자치도</option>
                     </select>
-                    <select class="form-select">
+                    <select class="form-select" id="type2">
                         <option value="" disabled selected>시/군/구</option>
                         <option value="gangnam">강남구</option>
                         <option value="yongsan">용산구</option>
@@ -100,12 +100,12 @@
                         <label><input type="checkbox" value="호프/통닭"> 호프/통닭</label><br>
                         <label><input type="checkbox" value="횟집"> 횟집</label><br>
                     </div>
-                    
+
                 </div>
             </div>
 
         </div>
-        
+
 
         <!-- 검색 결과 -->
         <div class="search-results">
@@ -166,9 +166,6 @@
 
     <div id="map" class="map"></div>
     <div id="address-info" class="address-info">현재 위치 조회</div>
-
-
-
 </body>
 
 
@@ -180,7 +177,12 @@
 </template>
 
 <template id="popUp">
-
+    <div class="popup-container">
+        <h3 class="popup-title">식당 이름</h3>
+        <p class="popup-address">도로명 주소: 서울특별시 강남구 어딘가 123</p>
+        <p class="popup-jibun">지번 주소: 서울특별시 강남구 어딘가 123-45</p>
+    </div>
 </template>
+
 
 </html>

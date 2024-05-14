@@ -21,5 +21,10 @@ public class StoreServiceImpl implements StoreService {
     public List<StoreDTO> selectListStore(SearchDTO searchDTO) {
        return storeMapper.selectListStore(searchDTO); 
     }
+
+    @Override
+    public int selectOneStoreListCount(SearchDTO searchDTO) {
+       return storeMapper.selectOneStoreListCount(searchDTO);
+    }
     
 }
