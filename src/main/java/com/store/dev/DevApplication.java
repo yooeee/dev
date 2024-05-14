@@ -1,9 +1,10 @@
 package com.store.dev;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.store.dev.mapper.TestMapper;
+import com.store.dev.mapper.StoreMapper;
 
 import jakarta.annotation.Resource;
 

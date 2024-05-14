@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.store.dev.mapper.StoreMapper">
+    <select id="selectListStore" parameterType="com.store.dev.dto.SearchDTO" resultType="com.store.dev.dto.StoreDTO">
+        SELECT * 
+        FROM store 
+        <where>
+            <if test='keyword != null'>name like CONCAT('%',#{keyword},'%')</if> 
+            <if test='category != null and category.size() > 0'>
+                <foreach collection="category" item="cate" separator="," open="(" close=")">
+                    #{cate}
+                </foreach>
+            </if>
+            <!-- TODO 시군구, 내거리 옵션 -->
+        </where>
+    </select>
+</mapper>

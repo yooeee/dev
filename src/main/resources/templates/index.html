@@ -39,7 +39,7 @@
         <div class="filter-body">
             <div class="filter-group">
                 <button class="button-active " onclick="toggleDropdown('locationDropdown', this)">지역별</button>
-                <button onclick="toggleDropdown('categoryDropdown', this)">카테고리</button>
+                <button onclick="toggleDropdown('categoryDropdown', this)">종류별</button>
             </div>
             <div class="filter-options">
                 <div id="locationDropdown" class="filter-dropdown" >
@@ -73,13 +73,34 @@
                 </div>
                 <div id="categoryDropdown" class="filter-dropdown" style="display: none;">
                     <div class="checkbox-group">
-                        <label><input type="checkbox" value="korean"> 한식</label><br>
-                        <label><input type="checkbox" value="chinese"> 중식</label><br>
-                        <label><input type="checkbox" value="japanese"> 일식</label><br>
-                        <label><input type="checkbox" value="wes tern"> 양식</label><br>
-                        <label><input type="checkbox" value="vegan"> 채식</label>
-                        <!-- 여기에 더 많은 카테고리 체크박스 추가 가능 -->
+                        <label><input type="checkbox" value="감성주점"> 감성주점</label><br>
+                        <label><input type="checkbox" value="경양식"> 경양식</label><br>
+                        <label><input type="checkbox" value="기타"> 기타</label><br>
+                        <label><input type="checkbox" value="김밥(도시락)"> 김밥(도시락)</label><br>
+                        <label><input type="checkbox" value="까페"> 까페</label><br>
+                        <label><input type="checkbox" value="냉면집"> 냉면집</label><br>
+                        <label><input type="checkbox" value="라이브카페"> 라이브카페</label><br>
+                        <label><input type="checkbox" value="복어취급"> 복어취급</label><br>
+                        <label><input type="checkbox" value="분식"> 분식</label><br>
+                        <label><input type="checkbox" value="뷔페식"> 뷔페식</label><br>
+                        <label><input type="checkbox" value="식육(숯불구이)"> 식육(숯불구이)</label><br>
+                        <label><input type="checkbox" value="외국음식전문점(인도,태국등)"> 외국음식전문점(인도,태국등)</label><br>
+                        <label><input type="checkbox" value="이동조리"> 이동조리</label><br>
+                        <label><input type="checkbox" value="일식"> 일식</label><br>
+                        <label><input type="checkbox" value="전통찻집"> 전통찻집</label><br>
+                        <label><input type="checkbox" value="정종/대포집/소주방"> 정종/대포집/소주방</label><br>
+                        <label><input type="checkbox" value="중국식"> 중국식</label><br>
+                        <label><input type="checkbox" value="출장조리"> 출장조리</label><br>
+                        <label><input type="checkbox" value="키즈카페"> 키즈카페</label><br>
+                        <label><input type="checkbox" value="탕류(보신용)"> 탕류(보신용)</label><br>
+                        <label><input type="checkbox" value="통닭(치킨)"> 통닭(치킨)</label><br>
+                        <label><input type="checkbox" value="패밀리레스트랑"> 패밀리레스트랑</label><br>
+                        <label><input type="checkbox" value="패스트푸드"> 패스트푸드</label><br>
+                        <label><input type="checkbox" value="한식"> 한식</label><br>
+                        <label><input type="checkbox" value="호프/통닭"> 호프/통닭</label><br>
+                        <label><input type="checkbox" value="횟집"> 횟집</label><br>
                     </div>
+                    
                 </div>
             </div>
 
@@ -151,11 +172,14 @@
 </body>
 
 
-<template>
+<template id="searchItemTpl">
     <div class="search-item">
         <p class="restaurant-name">식당 이름 1</p>
         <p>주소: 서울특별시 강남구 어딘가 1</p>
     </div>
+</template>
+
+<template id="popUp">
 
 </template>
 
