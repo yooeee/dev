@@ -33,7 +33,7 @@
     </select>
 
 
-    <!-- TODO 내반경, 거리(M) 조건일때 쿼리작성 -->
+    <!-- 반경 식당 조회 -->
     <select id="selectOneStoreListByLocation" parameterType="com.store.dev.dto.SearchRadiusDTO" resultType="int">
         SELECT jibeon, doro, name, category, lon, lat
         FROM store
