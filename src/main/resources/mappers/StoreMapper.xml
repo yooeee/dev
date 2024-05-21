@@ -8,7 +8,7 @@
             <if test='keyword != null'>name like CONCAT('%',#{keyword},'%')</if> 
             <if test='category != null and category.size() > 0'>
                 <foreach collection="category" item="cate" separator="," open="(" close=")">
-                    #{cate}
+                    category = #{cate} AND
                 </foreach>
             </if>
             <if test='type1 != "my"'>
@@ -33,11 +33,10 @@
                     category = #{cate} AND
                 </foreach>
             </if>
-                ST_DWithin(
-            ST_SetSRID(ST_MakePoint(lon, lat), 3857),
-            ST_SetSRID(ST_MakePoint(#{lon},#{lat}), 3857),
-            #{type2}
-        )
+            ST_DWithin(
+                ST_SetSRID(ST_MakePoint(lon, lat), 3857),
+                ST_SetSRID(ST_MakePoint(#{lon},#{lat}), 3857),
+                #{type2})
         </where>
     </select>
 
