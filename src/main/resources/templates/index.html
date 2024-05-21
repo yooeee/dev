@@ -43,10 +43,9 @@
             </div>
             <div class="filter-options">
                 <div id="locationDropdown" class="filter-dropdown">
-                    <select class="form-select" id="type1" title="시/도">
-                        <option value="" disabled selected>시/도</option>
-                        <option value="">전체</option>
-                        <option value="all">내 반경</option>
+                    <select class="form-select" id="type1">
+                        <option value="all" selected>전체</option>
+                        <option value="my">내 반경</option>
                         <option value="11">서울특별시</option>
                         <option value="26">부산광역시</option>
                         <option value="27">대구광역시</option>
@@ -66,9 +65,8 @@
                     </select>
                     <select class="form-select" id="type2">
                         <option value="" disabled selected>시/군/구</option>
-                        <option value="gangnam">강남구</option>
-                        <option value="yongsan">용산구</option>
-                        <option value="jongno">종로구</option>
+                        <!-- TODO DB 시군구 조회해서 뿌리기 -->
+                        <option value="gangnam">강남구</option>>
                     </select>
                 </div>
                 <div id="categoryDropdown" class="filter-dropdown" style="display: none;">
@@ -182,6 +180,15 @@
         <p class="popup-address">도로명 주소: 서울특별시 강남구 어딘가 123</p>
         <p class="popup-jibun">지번 주소: 서울특별시 강남구 어딘가 123-45</p>
     </div>
+</template>
+
+
+<template id="distance">
+    <option value="" disabled selected>선택</option>
+    <option value="0.5">0.5(km)</option>
+    <option value="1">1(km)</option>
+    <option value="1.5">1.5(km)</option>
+    <option value="2">2(km)</option>
 </template>
 
 

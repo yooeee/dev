@@ -11,9 +11,33 @@
                     #{cate}
                 </foreach>
             </if>
-            <if test='type1 != ""'> </if>
-            <if test='type2 != ""'> </if>
-            <!-- TODO 시군구 조건일때 -->
+            <if test='type1 != "my"'>
+                com_sd_nsdi.bjcd = #{type1} AND
+                com_sgg_nsdi.bjcd = #{type2}
+            </if>
+       
+        </where>
+    </select>
+
+
+    <!-- 내 반경 검색 -->
+    <select id="selectListStoreByDistance" parameterType="com.store.dev.dto.SearchDTO" resultType="com.store.dev.dto.StoreDTO">
+        SELECT 
+            jibeon, doro, name, category, lon, lat
+        FROM 
+            store
+        <where>
+            <if test='keyword != null'>name like CONCAT('%',#{keyword},'%') AND</if> 
+            <if test='category != null and category.size() > 0'>
+                <foreach collection="category" item="cate" separator="," open="(" close=")">
+                    category = #{cate} AND
+                </foreach>
+            </if>
+                ST_DWithin(
+            ST_SetSRID(ST_MakePoint(lon, lat), 3857),
+            ST_SetSRID(ST_MakePoint(#{lon},#{lat}), 3857),
+            #{type2}
+        )
         </where>
     </select>
 
@@ -28,7 +52,14 @@
                     #{cate}
                 </foreach>
             </if>
-            <!-- TODO 시군구 조건일때-->
+            <if test='type1 != "my"'>
+                LEFT(adm_code, 2) = com_sd_nsdi.bjcd AND
+                LEFT(adm_code, 5) = com_sgg_nsdi.bjcd
+            </if>
+            <if test='type1 == "my"'>
+                
+            </if>
+       
         </where>
     </select>
 
