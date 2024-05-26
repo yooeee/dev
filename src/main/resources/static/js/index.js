@@ -1,7 +1,9 @@
-window.onload = function () {
+document.addEventListener('DOMContentLoaded', function () {
     init();
-    setEvent();
-};
+    setInitEvent();
+    console.log("asd");
+
+});
 
 function init() {
     /**
@@ -12,9 +14,9 @@ function init() {
      */
 }
 
-function setEvent() {
+function setInitEvent() {
 
-
+    
     // 조건버튼 이벤트 시작
     document.getElementById('locationDropdown').querySelectorAll('select').forEach(select => {
         select.addEventListener('change', function () {
@@ -31,12 +33,12 @@ function setEvent() {
 
 
     // 검색버튼 이벤트
-    document.getElementById('searchBtn').addEventListener('change', function () {
+    document.getElementById('searchBtn').addEventListener('click', function () {
         getSearchList(1);
     });
 
     // 리셋버튼 이벤트
-    document.getElementById('resetBtn').addEventListener('change', function () {
+    document.getElementById('resetBtn').addEventListener('click', function () {
         // TODO 조건 리셋
     });
 
@@ -68,6 +70,7 @@ function getSearchList(page) {
         .then(result => {
             if (result.status == 'success') {
                 //TODO 1. PAGE처리, 2. 지도기능 적용 (조건별로)
+                console.log("result Success");
             }
             else {
                 console.log("fail search");

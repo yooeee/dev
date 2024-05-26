@@ -23,21 +23,16 @@ public class StoreApiController {
     private StoreService storeService;
     
     @GetMapping("")
-    public ResponseDTO searchList(@RequestParam SearchDTO searchDTO) {
+    public ResponseDTO searchList(SearchDTO searchDTO) {
         ResponseDTO res = new ResponseDTO();
         SearchResDTO resDTO = new SearchResDTO();
         
-        searchDTO.setCategory(null);
-        searchDTO.setKeyword("");
-        searchDTO.setPage(1);
-        searchDTO.setType1(null);
-        searchDTO.setType2(null);
+
 
         List<StoreDTO> list = storeService.selectListStore(searchDTO);
-        int count = storeService.selectOneStoreListCount(searchDTO);
 
         resDTO.setList(list);
-        resDTO.setCount(count);
+        resDTO.setCount(list.size());
         
         res.setStatus("SUCCESS");
         res.setErrCode(null);

@@ -3,7 +3,7 @@ let vectorLayer; // 벡터 레이어를 전역 변수로 선언
 
 window.onload = function () {
   init();
-  setEvent();
+  setMapEvent();
 };
 
 function init() {
@@ -29,7 +29,7 @@ function init() {
   updateLocation(map);
 }
 
-function setEvent() {
+function setMapEvent() {
 
 }
 

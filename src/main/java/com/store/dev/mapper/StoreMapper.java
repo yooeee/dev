@@ -11,6 +11,6 @@ import com.store.dev.dto.StoreDTO;
 public interface StoreMapper {
 
     List<StoreDTO> selectListStore(SearchDTO searchDTO);
-    int selectOneStoreListCount(SearchDTO searchDTO);
+    // int selectOneStoreListCount(SearchDTO searchDTO);
     
 } 
