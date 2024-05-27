@@ -1,7 +1,9 @@
+let currentPage = 1;
+const itemsPerPage = 10;
+
 document.addEventListener('DOMContentLoaded', function () {
     init();
     setInitEvent();
-    console.log("asd");
 
 });
 
@@ -15,6 +17,20 @@ function init() {
 }
 
 function setInitEvent() {
+
+    // 페이징버튼 시작
+    document.querySelector('.prev-button').addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            getSearchList(currentPage);
+        }
+    });
+
+    document.querySelector('.next-button').addEventListener('click', () => {
+        currentPage++;
+        getSearchList(currentPage);
+    });
+    // 페이징버튼 종료
 
     
     // 조건버튼 이벤트 시작
@@ -34,6 +50,7 @@ function setInitEvent() {
 
     // 검색버튼 이벤트
     document.getElementById('searchBtn').addEventListener('click', function () {
+        currentPage = 1;
         getSearchList(1);
     });
 
@@ -45,26 +62,42 @@ function setInitEvent() {
     // type1 이벤트
     document.getElementById('type1').addEventListener('change', function(e) {
         let selectedValue = e.target.value;
-        fetch(`/api/bjcd/sgg?bjcd=${selectedValue}`)
-        .then(response => response.json())
-        .then(data => {
+        let type2 = document.getElementById('type2');
 
-            // type2 select 요소를 찾아서 초기화
-            let type2 = document.getElementById('type2');
-            type2.innerHTML = '<option value="" disabled selected>시/군/구</option>';
-
-            // 가져온 데이터를 반복하여 option 요소를 생성하고 추가
-            data.result.forEach(item => {
+      if(selectedValue == "all"){
+            type2.innerHTML = '<option value="all" disabled selected>시/군/구</option>';
+        } else if (selectedValue == "my") {
+            type2.innerHTML = '<option value="" disabled selected>내 반경</option>';
+            
+            let distances = [0.5, 1, 1.5, 2];
+            distances.forEach(distance => {
                 let option = document.createElement('option');
-                option.value = item.bjcd;
-                option.textContent = item.name;
+                option.value = distance;
+                option.textContent = `${distance}km`;
                 type2.appendChild(option);
             });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // 에러 처리를 여기에 작성합니다.
-        });
+        }  else {
+            fetch(`/api/bjcd/sgg?bjcd=${selectedValue}`)
+            .then(response => response.json())
+            .then(data => {
+    
+                
+                type2.innerHTML = '<option value="my" disabled selected>시/군/구</option>';
+    
+                // 가져온 데이터를 반복하여 option 요소를 생성하고 추가
+                data.result.forEach(item => {
+                    let option = document.createElement('option');
+                    option.value = item.bjcd;
+                    option.textContent = item.name;
+                    type2.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // 에러 처리를 여기에 작성합니다.
+            });
+        }
+       
 
        
     });
@@ -72,10 +105,16 @@ function setInitEvent() {
 }
 
 function getSearchList(page) {
+
+    const keyword = document.getElementById('keyword').value;
+    if(keyword.length === 0){
+        alert("검색어를 입력해주세요.");
+        return;
+    }
     const data = {
         page: page,
         maxIndex: 10,
-        keyword: document.getElementById('keyword').value,
+        keyword: keyword,
         type1: document.getElementById('type1').value,
         type2: document.getElementById('type2').value,
     };
@@ -96,8 +135,24 @@ function getSearchList(page) {
         })
         .then(result => {
             if (result.status == 'success') {
-                //TODO 1. PAGE처리, 2. 지도기능 적용 (조건별로)
-                console.log("result Success");
+                let totalCount = document.querySelector('.total-count');
+                let searchItemsContainer = document.querySelector('.search-items-container');
+                let template = document.getElementById('searchItemTpl');
+
+                // 검색 결과 초기화
+                searchItemsContainer.innerHTML = '';
+                totalCount.textContent = result.resultCnt;
+
+                // 검색 결과 항목 추가
+                result.result.forEach(item => {
+                    let clone = template.content.cloneNode(true);
+                    clone.querySelector('.restaurant-name').textContent = item.name;
+                    clone.querySelector('.restaurant-address').textContent = item.doro;
+                    searchItemsContainer.appendChild(clone);
+                });
+
+                // 페이지 번호 업데이트
+                updatePagination(result.resultCnt);
             }
             else {
                 console.log("fail search");
@@ -107,7 +162,58 @@ function getSearchList(page) {
 
 }
 
+function updatePagination(totalCount) {
+    const totalPages = Math.ceil(totalCount / itemsPerPage);
+    const paginationContainer = document.querySelector('.pagination');
+    const maxVisiblePages = 5;
+    paginationContainer.innerHTML = '';
 
+    // 이전 버튼
+    const prevButton = document.createElement('button');
+    prevButton.classList.add('prev-button');
+    prevButton.textContent = '◀';
+    prevButton.disabled = (currentPage === 1);
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            getSearchList(currentPage);
+        }
+    });
+    paginationContainer.appendChild(prevButton);
+
+    // 페이지 번호 버튼
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.classList.add('page-number');
+        if (i === currentPage) {
+            pageButton.classList.add('active');
+        }
+        pageButton.textContent = i;
+        pageButton.addEventListener('click', () => {
+            currentPage = i;
+            getSearchList(currentPage);
+        });
+        paginationContainer.appendChild(pageButton);
+    }
+
+    // 다음 버튼
+    const nextButton = document.createElement('button');
+    nextButton.classList.add('next-button');
+    nextButton.textContent = '▶';
+    nextButton.disabled = (currentPage === totalPages);
+    nextButton.addEventListener('click', () => {
+        currentPage++;
+        getSearchList(currentPage);
+    });
+    paginationContainer.appendChild(nextButton);
+}
 function toggleDropdown(id, button) {
     // 모든 드롭다운 메뉴를 가져옴
     const allDropdowns = document.querySelectorAll('.filter-dropdown');

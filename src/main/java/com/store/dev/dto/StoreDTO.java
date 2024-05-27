@@ -14,4 +14,5 @@ public class StoreDTO {
     private String category;
     private double lon;
     private double lat;
+    private String admCode;
 }

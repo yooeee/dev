@@ -27,16 +27,15 @@ public class StoreApiController {
         ResponseDTO res = new ResponseDTO();
         SearchResDTO resDTO = new SearchResDTO();
         
-
-
         List<StoreDTO> list = storeService.selectListStore(searchDTO);
-
+        int count = storeService.selectListStoreByCount(searchDTO);
         resDTO.setList(list);
-        resDTO.setCount(list.size());
+        resDTO.setCount(count);
         
-        res.setStatus("SUCCESS");
+        res.setStatus("success");
         res.setErrCode(null);
         res.setResult(list);
+        res.setResultCnt(count);
         return res;
     }
 }

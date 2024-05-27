@@ -12,8 +12,11 @@ import com.store.dev.dto.StoreDTO;
 public interface StoreMapper {
 
     List<StoreDTO> selectListStore(SearchDTO searchDTO);
-    // int selectOneStoreListCount(SearchDTO searchDTO);
+
+    int selectListStoreByCount(SearchDTO searchDTO);
 
     List<SggDTO> selectListSggBySdBjcd(String bjcd);
+
+    
     
 } 

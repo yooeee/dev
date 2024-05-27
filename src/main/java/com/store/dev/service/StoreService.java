@@ -11,6 +11,8 @@ public interface StoreService {
     
     public List<StoreDTO> selectListStore(SearchDTO searchDTO);
 
+    public int selectListStoreByCount(SearchDTO searchDTO);
+
     public List<SggDTO> selectListSggBySdBjcd(String bjcd);
 
 } 

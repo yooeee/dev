@@ -24,9 +24,16 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<SggDTO> selectListSggBySdBjcd(String bjcd) {
-        return storeMapper.selectListSggBySdBjcd(bjcd);
+    public int selectListStoreByCount(SearchDTO searchDTO) {
+        return storeMapper.selectListStoreByCount(searchDTO);
     }
+
+    @Override
+    public List<SggDTO> selectListSggBySdBjcd(String bjcd) {
+        return storeMapper.selectListSggBySdBjcd(bjcd); 
+    }
+
+    
 
   
     

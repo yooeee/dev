@@ -4,14 +4,13 @@
 
     <!-- 일반 식당 검색 -->
     <select id="selectListStore" parameterType="com.store.dev.dto.SearchDTO" resultType="com.store.dev.dto.StoreDTO">
-        SELECT * 
+        SELECT store.* 
         FROM store
         <where>
-            1 = 1
             <if test="keyword != null and keyword != ''">
-                AND store.name LIKE CONCAT('%', #{keyword}, '%')
-                AND store.jibeon LIKE CONCAT('%', #{keyword}, '%')
-                AND store.doro LIKE CONCAT('%', #{keyword}, '%')
+                (store.name LIKE CONCAT('%', #{keyword}, '%')
+                OR store.jibeon LIKE CONCAT('%', #{keyword}, '%')
+                OR store.doro LIKE CONCAT('%', #{keyword}, '%'))
             </if> 
             <if test="category != null and category.size() > 0">
                 AND store.category IN
@@ -19,13 +18,48 @@
                     #{cate}
                 </foreach>
             </if>
-            <!-- <if test="type1 != 'my'">
-                AND store.adm_code like #{type1}
-            </if>
-            <if test="type2 != null">
-                AND store.adm_code like  #{type2}
+            <!-- <if test="type1 == 'all'">
+
             </if> -->
+            <if test="type1 != 'all' and type2 == 'all' ">
+                AND LEFT(adm_code,2) = #{type1} 
+            </if>
+            <if test="type1 != 'all' and type2 != 'all' ">
+                AND LEFT(adm_code,2) = #{type1} 
+                AND  LEFT(adm_code, 5) = #{type2}
+            </if>
         </where>
+        LIMIT #{maxIndex} OFFSET ( #{page} - 1 ) * 10
+    </select>
+
+    <!-- 일반 식당 전체 카운트 검색 -->
+    <select id="selectListStoreByCount" parameterType="com.store.dev.dto.SearchDTO" resultType="int">
+        SELECT count(store.*) 
+        FROM store
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (store.name LIKE CONCAT('%', #{keyword}, '%')
+                OR store.jibeon LIKE CONCAT('%', #{keyword}, '%')
+                OR store.doro LIKE CONCAT('%', #{keyword}, '%'))
+            </if> 
+            <if test="category != null and category.size() > 0">
+                AND store.category IN
+                <foreach collection="category" item="cate" separator="," open="(" close=")">
+                    #{cate}
+                </foreach>
+            </if>
+            <!-- <if test="type1 == 'all'">
+
+            </if> -->
+            <if test="type1 != 'all' and type2 == 'all' ">
+                AND LEFT(adm_code,2) = #{type1} 
+            </if>
+            <if test="type1 != 'all' and type2 != 'all' ">
+                AND LEFT(adm_code,2) = #{type1} 
+                AND  LEFT(adm_code, 5) = #{type2}
+            </if>
+        </where>
+
     </select>
 
 
@@ -53,49 +87,6 @@
         </where>
     </select>
 
-
-    <!-- <select id="selectOneStoreListCount" parameterType="com.store.dev.dto.SearchDTO" resultType="int">
-        SELECT count(*)
-        FROM store 
-        <where>
-            <if test='keyword != null'>name like CONCAT('%',#{keyword},'%')</if> 
-            <if test='category != null and category.size() > 0'>
-                <foreach collection="category" item="cate" separator="," open="(" close=")">
-                    #{cate}
-                </foreach>
-            </if>
-            <if test='type1 != "my"'>
-                LEFT(adm_code, 2) = com_sd_nsdi.bjcd AND
-                LEFT(adm_code, 5) = com_sgg_nsdi.bjcd
-            </if>
-            <if test='type1 == "my"'>
-            </if>
-        </where>
-    </select> -->
-
-
-    <!-- 반경 식당 조회 -->
-    <!-- <select id="selectListStoreByDistance" parameterType="com.store.dev.dto.SearchDTO" resultType="com.store.dev.dto.StoreDTO">
-        SELECT 
-            count(*)
-        FROM 
-            store
-        <where>
-            ST_DWithin(
-                    ST_SetSRID(ST_MakePoint(lon, lat), 3857),
-                    ST_SetSRID(ST_MakePoint(#{lon},#{lat}), 3857),
-                    #{type2}) AND
-            <if test="keyword != null and keyword != ''">
-                AND name LIKE CONCAT('%', #{keyword}, '%')
-            </if> 
-            <if test="category != null and category.size() > 0">
-                AND category IN
-                <foreach collection="category" item="cate" separator="," open="(" close=")">
-                    #{cate}
-                </foreach>
-            </if>
-        </where>
-    </select> -->
 
     <!-- TODO -->
     <!-- 시도 검색 -->
