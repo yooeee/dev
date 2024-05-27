@@ -42,6 +42,33 @@ function setInitEvent() {
         // TODO 조건 리셋
     });
 
+    // type1 이벤트
+    document.getElementById('type1').addEventListener('change', function(e) {
+        let selectedValue = e.target.value;
+        fetch(`/api/bjcd/sgg?bjcd=${selectedValue}`)
+        .then(response => response.json())
+        .then(data => {
+
+            // type2 select 요소를 찾아서 초기화
+            let type2 = document.getElementById('type2');
+            type2.innerHTML = '<option value="" disabled selected>시/군/구</option>';
+
+            // 가져온 데이터를 반복하여 option 요소를 생성하고 추가
+            data.result.forEach(item => {
+                let option = document.createElement('option');
+                option.value = item.bjcd;
+                option.textContent = item.name;
+                type2.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // 에러 처리를 여기에 작성합니다.
+        });
+
+       
+    });
+
 }
 
 function getSearchList(page) {

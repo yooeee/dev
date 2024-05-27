@@ -97,6 +97,64 @@
         </where>
     </select> -->
 
+    <!-- TODO -->
+    <!-- 시도 검색 -->
+    <select id="selectListSd" parameterType="int" resultType="com.store.dev.dto.SdDTO">
+        SELECT 
+            jibeon, doro, name, category, lon, lat
+        FROM 
+            store
+        <where>
+            ST_DWithin(
+                    ST_SetSRID(ST_MakePoint(lon, lat), 3857),
+                    ST_SetSRID(ST_MakePoint(#{lon},#{lat}), 3857),
+                    #{type2}) AND
+            <if test="keyword != null and keyword != ''">
+                AND name LIKE CONCAT('%', #{keyword}, '%')
+            </if> 
+            <if test="category != null and category.size() > 0">
+                AND category IN
+                <foreach collection="category" item="cate" separator="," open="(" close=")">
+                    #{cate}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    
+    <!-- 시군구 검색 -->
+    <select id="selectListSgg" parameterType="int" resultType="com.store.dev.dto.SggDTO">
+        SELECT 
+            jibeon, doro, name, category, lon, lat
+        FROM 
+            store
+        <where>
+            ST_DWithin(
+                    ST_SetSRID(ST_MakePoint(lon, lat), 3857),
+                    ST_SetSRID(ST_MakePoint(#{lon},#{lat}), 3857),
+                    #{type2}) AND
+            <if test="keyword != null and keyword != ''">
+                AND name LIKE CONCAT('%', #{keyword}, '%')
+            </if> 
+            <if test="category != null and category.size() > 0">
+                AND category IN
+                <foreach collection="category" item="cate" separator="," open="(" close=")">
+                    #{cate}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 시군구 Seq 조건검색 -->
+    <select id="selectListSggBySdBjcd" parameterType="String" resultType="com.store.dev.dto.SggDTO">
+        SELECT 
+            gid, ufid, bjcd, name, lon, lat
+        FROM 
+            com_sgg_nsdi
+        WHERE 
+            LEFT(bjcd, 2) = #{bjcd}
+        
+    </select>
 
 
 </mapper>

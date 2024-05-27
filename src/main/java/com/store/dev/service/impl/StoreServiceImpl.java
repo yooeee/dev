@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.store.dev.dto.SearchDTO;
+import com.store.dev.dto.SggDTO;
 import com.store.dev.dto.StoreDTO;
 import com.store.dev.mapper.StoreMapper;
 import com.store.dev.service.StoreService;
@@ -20,6 +21,11 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public List<StoreDTO> selectListStore(SearchDTO searchDTO) {
        return storeMapper.selectListStore(searchDTO); 
+    }
+
+    @Override
+    public List<SggDTO> selectListSggBySdBjcd(String bjcd) {
+        return storeMapper.selectListSggBySdBjcd(bjcd);
     }
 
   
