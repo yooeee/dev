@@ -15,4 +15,8 @@ public interface StoreService {
 
     public List<SggDTO> selectListSggBySdBjcd(String bjcd);
 
+    public List<StoreDTO> selectListStoreByDistance(SearchDTO searchDTO);
+
+    public int selectListStoreCountByDistance(SearchDTO searchDTO);
+
 } 

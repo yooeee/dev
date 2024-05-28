@@ -15,8 +15,21 @@ public interface StoreMapper {
 
     int selectListStoreByCount(SearchDTO searchDTO);
 
+
+
     List<SggDTO> selectListSggBySdBjcd(String bjcd);
 
+    List<StoreDTO> selectListStoreByDistance(SearchDTO searchDTO);
+
+    int selectListStoreCountByDistance(SearchDTO searchDTO);
+
+
+
+    // sd 전체 조회
     
+
+    // 특정 sgg 조회
+    
+
     
 } 

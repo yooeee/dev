@@ -1,5 +1,6 @@
 let map;
 let vectorLayer; // 벡터 레이어를 전역 변수로 선언
+let myCoords = null; // 현재 좌표
 
 window.onload = function () {
   init();
@@ -36,8 +37,8 @@ function setMapEvent() {
 function updateLocation(map) {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      const coords = [position.coords.longitude, position.coords.latitude];
-      const olCoords = ol.proj.fromLonLat(coords);
+      myCoords = [position.coords.longitude, position.coords.latitude];
+      const olCoords = ol.proj.fromLonLat(myCoords);
       map.getView().animate({ center: olCoords, zoom: 14 });
 
       if (vectorLayer) {
@@ -72,7 +73,7 @@ function updateLocation(map) {
       map.addLayer(vectorLayer);
 
       
-      fetchAddress(coords);
+      fetchAddress(myCoords);
      
     }, function (error) {
       console.error("Geolocation error: ", error);

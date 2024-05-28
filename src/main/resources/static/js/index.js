@@ -82,7 +82,7 @@ function setInitEvent() {
             .then(data => {
     
                 
-                type2.innerHTML = '<option value="my" disabled selected>시/군/구</option>';
+                type2.innerHTML = '<option value="all" disabled selected>시/군/구</option>';
     
                 // 가져온 데이터를 반복하여 option 요소를 생성하고 추가
                 data.result.forEach(item => {
@@ -107,6 +107,8 @@ function setInitEvent() {
 function getSearchList(page) {
 
     const keyword = document.getElementById('keyword').value;
+    const type1 = document.getElementById('type1').value;
+    const type2 = document.getElementById('type2').value;
     if(keyword.length === 0){
         alert("검색어를 입력해주세요.");
         return;
@@ -115,9 +117,15 @@ function getSearchList(page) {
         page: page,
         maxIndex: 10,
         keyword: keyword,
-        type1: document.getElementById('type1').value,
-        type2: document.getElementById('type2').value,
+        type1: type1,
+        type2: type2,
     };
+    
+
+    if(type1 == "my"){
+        data.lon = myCoords[0] + '';
+        data.lat = myCoords[1] + '';
+    }
 
 
     const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');

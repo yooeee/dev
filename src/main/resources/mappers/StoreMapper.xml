@@ -65,19 +65,24 @@
 
 
     <!-- 내 반경 검색 -->
-    <select id="selectListStoreByDistance" parameterType="com.store.dev.dto.SearchDTO" resultType="com.store.dev.dto.StoreDTO">
+   <select id="selectListStoreByDistance" parameterType="com.store.dev.dto.SearchDTO" resultType="com.store.dev.dto.StoreDTO">
         SELECT 
             jibeon, doro, name, category, lon, lat
         FROM 
             store
         <where>
-            ST_DWithin(
-                    ST_SetSRID(ST_MakePoint(lon, lat), 3857),
-                    ST_SetSRID(ST_MakePoint(#{lon},#{lat}), 3857),
-                    #{type2}) AND
+                public.ST_DWithin(
+                public.ST_Transform(
+                    public.ST_SetSRID(
+                        public.ST_MakePoint(lon::float8, lat::float8), 4326), 3857),
+                public.ST_Transform(
+                    public.ST_SetSRID(
+                        public.ST_MakePoint(#{lon}, #{lat}), 4326), 3857),
+                #{type2}::float8
+            )
             <if test="keyword != null and keyword != ''">
                 AND name LIKE CONCAT('%', #{keyword}, '%')
-            </if> 
+            </if>
             <if test="category != null and category.size() > 0">
                 AND category IN
                 <foreach collection="category" item="cate" separator="," open="(" close=")">
@@ -86,6 +91,36 @@
             </if>
         </where>
     </select>
+
+
+    <!-- 내 반경 카운트 검색 -->
+    <select id="selectListStoreCountByDistance" parameterType="com.store.dev.dto.SearchDTO" resultType="int">
+        SELECT 
+            count(*)
+        FROM 
+            store
+        <where>
+              public.ST_DWithin(
+            public.ST_Transform(
+                public.ST_SetSRID(
+                    public.ST_MakePoint(lon::float8, lat::float8), 4326), 3857),
+            public.ST_Transform(
+                public.ST_SetSRID(
+                    public.ST_MakePoint(#{lon}, #{lat}), 4326), 3857),
+            #{type2}::float8
+        )
+            <if test="keyword != null and keyword != ''">
+                AND name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="category != null and category.size() > 0">
+                AND category IN
+                <foreach collection="category" item="cate" separator="," open="(" close=")">
+                    #{cate}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
 
 
     <!-- TODO -->
@@ -144,8 +179,22 @@
             com_sgg_nsdi
         WHERE 
             LEFT(bjcd, 2) = #{bjcd}
-        
     </select>
 
+
+    <!-- sd 개수 조회 -->
+
+    <!-- sgg 개수 조회 -->
+    <select id="selectListSggCount" parameterType="String" resultType="com.store.dev.dto.SggDTO">
+        SELECT 
+            gid, ufid, bjcd, name, lon, lat
+        FROM 
+            com_sgg_nsdi
+        WHERE 
+            LEFT(bjcd, 2) = #{bjcd}
+    </select>
+
+
+    <!-- 특정 sgg 개수 조회 -->
 
 </mapper>

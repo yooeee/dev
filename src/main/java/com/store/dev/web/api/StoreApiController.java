@@ -26,9 +26,18 @@ public class StoreApiController {
     public ResponseDTO searchList(SearchDTO searchDTO) {
         ResponseDTO res = new ResponseDTO();
         SearchResDTO resDTO = new SearchResDTO();
+
+        List<StoreDTO> list = null;
+        int count;
         
-        List<StoreDTO> list = storeService.selectListStore(searchDTO);
-        int count = storeService.selectListStoreByCount(searchDTO);
+        if(!searchDTO.getType1().equals("my")){
+            list = storeService.selectListStore(searchDTO);
+            count = storeService.selectListStoreByCount(searchDTO);
+        } else{
+            list = storeService.selectListStoreByDistance(searchDTO);
+            count = storeService.selectListStoreCountByDistance(searchDTO);
+        }
+       
         resDTO.setList(list);
         resDTO.setCount(count);
         

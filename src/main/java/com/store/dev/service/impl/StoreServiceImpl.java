@@ -33,6 +33,16 @@ public class StoreServiceImpl implements StoreService {
         return storeMapper.selectListSggBySdBjcd(bjcd); 
     }
 
+    @Override
+    public List<StoreDTO> selectListStoreByDistance(SearchDTO searchDTO) {
+       return storeMapper.selectListStoreByDistance(searchDTO);
+    }
+
+    @Override
+    public int selectListStoreCountByDistance(SearchDTO searchDTO) {
+        return storeMapper.selectListStoreCountByDistance(searchDTO);
+    }
+
     
 
   
