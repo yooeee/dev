@@ -69,11 +69,11 @@ function setInitEvent() {
         } else if (selectedValue == "my") {
             type2.innerHTML = '<option value="" disabled selected>내 반경</option>';
             
-            let distances = [0.5, 1, 1.5, 2];
+            let distances = [500, 1000, 1500, 2000];
             distances.forEach(distance => {
                 let option = document.createElement('option');
                 option.value = distance;
-                option.textContent = `${distance}km`;
+                option.textContent = `${distance}M`;
                 type2.appendChild(option);
             });
         }  else {

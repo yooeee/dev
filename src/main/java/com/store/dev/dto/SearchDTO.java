@@ -16,4 +16,5 @@ public class SearchDTO {
     private List<String> category;
     private double lon;
     private double lat;
+    
 }
