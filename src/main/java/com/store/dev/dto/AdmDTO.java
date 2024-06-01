@@ -5,13 +5,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SdDTO {
+public class AdmDTO {
     
-    private int gid;
-    private String ufid;
-    private String bjcd;
+    private String code;
     private String name;
     private double lon;
     private double lat;
-    private double geom;
+    private String geom; // 실제로는 geometry 타입, 문자열로 가정
+    private int count;
 }

@@ -2,6 +2,7 @@ package com.store.dev.service;
 
 import java.util.List;
 
+import com.store.dev.dto.AdmDTO;
 import com.store.dev.dto.SearchDTO;
 import com.store.dev.dto.SggDTO;
 import com.store.dev.dto.StoreDTO;
@@ -18,5 +19,8 @@ public interface StoreService {
     public List<StoreDTO> selectListStoreByDistance(SearchDTO searchDTO);
 
     public int selectListStoreCountByDistance(SearchDTO searchDTO);
+
+    public List<AdmDTO> selectListSdCluster(SearchDTO searchDTO);
+    public List<AdmDTO> selectListSggCluster(SearchDTO searchDTO);
 
 } 

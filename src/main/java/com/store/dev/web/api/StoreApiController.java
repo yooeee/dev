@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.store.dev.dto.AdmDTO;
 import com.store.dev.dto.ResponseDTO;
 import com.store.dev.dto.SearchDTO;
 import com.store.dev.dto.SearchResDTO;
@@ -28,11 +29,16 @@ public class StoreApiController {
         SearchResDTO resDTO = new SearchResDTO();
 
         List<StoreDTO> list = null;
+        List<AdmDTO> sdList = null;
+        List<AdmDTO> sggList = null;
         int count;
         
         if(!searchDTO.getType1().equals("my")){
             list = storeService.selectListStore(searchDTO);
             count = storeService.selectListStoreByCount(searchDTO);
+            sdList = storeService.selectListSdCluster(searchDTO);
+            sggList = storeService.selectListSggCluster(searchDTO);
+
         } else{
             list = storeService.selectListStoreByDistance(searchDTO);
             count = storeService.selectListStoreCountByDistance(searchDTO);
@@ -44,6 +50,8 @@ public class StoreApiController {
         res.setStatus("success");
         res.setErrCode(null);
         res.setResult(list);
+        res.setSdResult(sdList);
+        res.setSggResult(sggList);
         res.setResultCnt(count);
         return res;
     }

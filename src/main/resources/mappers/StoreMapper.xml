@@ -141,58 +141,19 @@
                 #{cate}
             </foreach>
         </if>
+        <if test="type1 != 'all' and type2 == 'all' ">
+            AND LEFT(store.adm_code, 2) = #{type1} 
+        </if>
+        <if test="type1 != 'all' and type2 != 'all' ">
+            AND LEFT(store.adm_code, 2) = #{type1} 
+            AND LEFT(store.adm_code, 5) = #{type2}
+        </if>
     </where>
    
     </select>
 
 
 
-    <!-- TODO -->
-    <!-- 시도 검색 -->
-    <select id="selectListSd" parameterType="int" resultType="com.store.dev.dto.SdDTO">
-        SELECT 
-            jibeon, doro, name, category, lon, lat
-        FROM 
-            store
-        <where>
-            ST_DWithin(
-                    ST_SetSRID(ST_MakePoint(lon, lat), 3857),
-                    ST_SetSRID(ST_MakePoint(#{lon},#{lat}), 3857),
-                    #{type2}) AND
-            <if test="keyword != null and keyword != ''">
-                AND name LIKE CONCAT('%', #{keyword}, '%')
-            </if> 
-            <if test="category != null and category.size() > 0">
-                AND category IN
-                <foreach collection="category" item="cate" separator="," open="(" close=")">
-                    #{cate}
-                </foreach>
-            </if>
-        </where>
-    </select>
-    
-    <!-- 시군구 검색 -->
-    <select id="selectListSgg" parameterType="int" resultType="com.store.dev.dto.SggDTO">
-        SELECT 
-            jibeon, doro, name, category, lon, lat
-        FROM 
-            store
-        <where>
-            ST_DWithin(
-                    ST_SetSRID(ST_MakePoint(lon, lat), 3857),
-                    ST_SetSRID(ST_MakePoint(#{lon},#{lat}), 3857),
-                    #{type2}) AND
-            <if test="keyword != null and keyword != ''">
-                AND name LIKE CONCAT('%', #{keyword}, '%')
-            </if> 
-            <if test="category != null and category.size() > 0">
-                AND category IN
-                <foreach collection="category" item="cate" separator="," open="(" close=")">
-                    #{cate}
-                </foreach>
-            </if>
-        </where>
-    </select>
 
 
     <!-- 시군구 Seq 조건검색 -->
@@ -207,16 +168,73 @@
 
 
     <!-- sd 개수 조회 -->
+<select id="selectListSdCluster" parameterType="com.store.dev.dto.SearchDTO" resultType="com.store.dev.dto.AdmDTO">
+    SELECT
+        LEFT(store.adm_code, 2) as code,
+        prov.name as name,
+        prov.lon as lon,
+        prov.lat as lat,
+        prov.geom as geom,
+        COUNT(*) as count
+    FROM store
+    JOIN com_sd_nsdi prov ON LEFT(store.adm_code, 2) = prov.bjcd
+    <where>
+        <if test="keyword != null and keyword != ''">
+            (store.name LIKE CONCAT('%', #{keyword}, '%')
+            OR store.jibeon LIKE CONCAT('%', #{keyword}, '%')
+            OR store.doro LIKE CONCAT('%', #{keyword}, '%'))
+        </if> 
+        <if test="category != null and category.size() > 0">
+            AND store.category IN
+            <foreach collection="category" item="cate" separator="," open="(" close=")">
+                #{cate}
+            </foreach>
+        </if>
+        <if test="type1 != 'all' and type2 == 'all' ">
+            AND LEFT(store.adm_code, 2) = #{type1} 
+        </if>
+        <if test="type1 != 'all' and type2 != 'all' ">
+            AND LEFT(store.adm_code, 2) = #{type1} 
+            AND LEFT(store.adm_code, 5) = #{type2}
+        </if>
+    </where>
+    GROUP BY LEFT(store.adm_code, 2), prov.name, prov.lon, prov.lat, prov.geom
+</select>
 
-    <!-- sgg 개수 조회 -->
-    <select id="selectListSggCount" parameterType="String" resultType="com.store.dev.dto.SggDTO">
-        SELECT 
-            gid, ufid, bjcd, name, lon, lat
-        FROM 
-            com_sgg_nsdi
-        WHERE 
-            LEFT(bjcd, 2) = #{bjcd}
-    </select>
+    <!-- sgg 개수 조회  -->
+<select id="selectListSggCluster" parameterType="com.store.dev.dto.SearchDTO" resultType="com.store.dev.dto.AdmDTO">
+    SELECT
+        LEFT(store.adm_code, 5) as code,
+        sgg.name as name,
+        sgg.lon as lon,
+        sgg.lat as lat,
+        sgg.geom as geom,
+        COUNT(*) as count
+    FROM store
+    JOIN com_sgg_nsdi sgg ON LEFT(store.adm_code, 5) = sgg.bjcd
+    <where>
+        <if test="keyword != null and keyword != ''">
+            (store.name LIKE CONCAT('%', #{keyword}, '%')
+            OR store.jibeon LIKE CONCAT('%', #{keyword}, '%')
+            OR store.doro LIKE CONCAT('%', #{keyword}, '%'))
+        </if> 
+        <if test="category != null and category.size() > 0">
+            AND store.category IN
+            <foreach collection="category" item="cate" separator="," open="(" close=")">
+                #{cate}
+            </foreach>
+        </if>
+        <if test="type1 != 'all' and type2 == 'all' ">
+            AND LEFT(store.adm_code, 2) = #{type1} 
+        </if>
+        <if test="type1 != 'all' and type2 != 'all' ">
+            AND LEFT(store.adm_code, 2) = #{type1} 
+            AND LEFT(store.adm_code, 5) = #{type2}
+        </if>
+    </where>
+    GROUP BY LEFT(store.adm_code, 5), sgg.name, sgg.lon, sgg.lat, sgg.geom
+</select>
+
 
 
     <!-- 특정 sgg 개수 조회 -->

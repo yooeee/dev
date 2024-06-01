@@ -16,12 +16,12 @@ class H_Cluster {
 
     init() {
         const that = this;
-        this.map.map.on('moveend', event => {
+        this.map.on('moveend', event => {
             that._updateCluster();
         });
     }
 
-    createAdmbdClusterLayer(datas, sdDatas, sggDatas, img) {
+    createAdmbdClusterLayer(datas, sdDatas, sggDatas) {
         this._removeCluster();
         this.layer = new ol.layer.Vector({
             properties: {
@@ -29,30 +29,29 @@ class H_Cluster {
             },
             zIndex: 9999,
         });
-        this.map.map.addLayer(this.layer);
+        this.map.addLayer(this.layer);
 
         if (datas.length === 0) {
             return false;
         }
 
-        switch (this.showLevelLength.toString()) {
-            case '3':
-                this.dataVectorSource = this._createDataVectorSource(datas, img);
-            case '2':
-                this.sggVectorSource = this._createSggVectorSource(sggDatas);
-            case '1':
-                this.sdVectorSource = this._createSdVectorSource(sdDatas);
-                break;
-        }
+        
+        this.dataVectorSource = this._createDataVectorSource(datas);
+    
+        this.sggVectorSource = this._createSggVectorSource(sggDatas);
+
+        this.sdVectorSource = this._createSdVectorSource(sdDatas);
+    
+       
 
         this._updateCluster();
-        this.map.moveToHome();
+       
     }
 
     _createSdVectorSource(datas) {
         let sdVectorSource = new ol.source.Vector();
         datas.forEach(sd => {
-            const count = sd.properties.count;
+            const count = sd.count;
             if (count == 0) {
                 return;
             }
@@ -80,18 +79,19 @@ class H_Cluster {
                 }
             }
 
-            if (sd.coord.lon && sd.coord.lat) {
-                const coordinate = ol.proj.transform([parseFloat(sd.coord.lon), parseFloat(sd.coord.lat)], 'EPSG:4326', 'EPSG:3857');
+            if (sd.lon && sd.lat) {
+                
+                const coordinate = ol.proj.transform([parseFloat(sd.lon), parseFloat(sd.lat)], 'EPSG:4326', 'EPSG:3857');
                 const feature = new ol.Feature({
                     geometry: new ol.geom.Point(coordinate),
                     name: 'sd_marker',
-                    lon: sd.coord.lon,
-                    lat: sd.coord.lat,
-                    bdCode: sd.properties.bdCode,
-                    properties: sd.properties ? sd.properties : '',
+                    lon: sd.lon,
+                    lat: sd.lat,
+                    bdCode: sd.code,
+                    properties: '',
                 });
 
-                const style = OL_STYLE.SD_CLUSTER_COLOR.find(color => color.bjcd === sd.properties.bdCode);
+                const style = OL_STYLE.SD_CLUSTER_COLOR.find(color => color.bjcd === sd.code);
                 const fillColor = style ? style.clColor : 'gray';
                 feature.setStyle(
                     new ol.style.Style({
@@ -101,7 +101,7 @@ class H_Cluster {
                             stroke: new ol.style.Stroke({ color: 'white', width: 0.8 }),
                         }),
                         text: new ol.style.Text({
-                            text: style.name.toString() + '\n' + sd.properties.count.toString(),
+                            text: style.name.toString() + '\n' + sd.count.toString(),
                             fill: new ol.style.Fill({ color: '#000' }),
                             stroke: new ol.style.Stroke({ color: '#fff', width: 3 }),
                             font: 'Bold 14px Arial',
@@ -117,7 +117,7 @@ class H_Cluster {
     _createSggVectorSource(sggDatas) {
         let sggVectorSource = new ol.source.Vector();
         sggDatas.forEach(sgg => {
-            const count = sgg.properties.count;
+            const count = sgg.count;
             if (count == 0) {
                 return;
             }
@@ -132,18 +132,18 @@ class H_Cluster {
                 size = 60;
             }
 
-            if (sgg.coord.lon && sgg.coord.lat) {
-                const coordinate = ol.proj.transform([parseFloat(sgg.coord.lon), parseFloat(sgg.coord.lat)], 'EPSG:4326', 'EPSG:3857');
+            if (sgg.lon && sgg.lat) {
+                const coordinate = ol.proj.transform([parseFloat(sgg.lon), parseFloat(sgg.lat)], 'EPSG:4326', 'EPSG:3857');
                 const feature = new ol.Feature({
                     geometry: new ol.geom.Point(coordinate),
                     name: 'sgg_marker',
-                    lon: sgg.coord.lon,
-                    lat: sgg.coord.lat,
-                    bdCode: sgg.properties.bdCode,
-                    properties: sgg.properties ? sgg.properties : '',
+                    lon: sgg.lon,
+                    lat: sgg.lat,
+                    bdCode: sgg.code,
+                    properties: '',
                 });
 
-                const style = OL_STYLE.SD_CLUSTER_COLOR.find(color => color.bjcd === sgg.properties.bdCode.substring(0, 2));
+                const style = OL_STYLE.SD_CLUSTER_COLOR.find(color => color.bjcd === sgg.code.substring(0, 2));
                 const fillColor = style ? style.clColor : 'gray';
 
                 feature.setStyle(
@@ -154,7 +154,7 @@ class H_Cluster {
                             stroke: new ol.style.Stroke({ color: 'white', width: 0.8 }),
                         }),
                         text: new ol.style.Text({
-                            text: sgg.properties.name.toString() + '\n' + sgg.properties.count.toString(),
+                            text: sgg.name.toString() + '\n' + sgg.count.toString(),
                             fill: new ol.style.Fill({ color: '#000' }),
                             stroke: new ol.style.Stroke({ color: '#fff', width: 3 }),
                             font: 'Bold 14px Arial',
@@ -167,47 +167,51 @@ class H_Cluster {
         return sggVectorSource;
     }
 
-    _createDataVectorSource(datas, img) {
-        let vectorSource = new ol.source.Vector();
-        datas.forEach(data => {
-            // 좌표를 EPSG:3857으로 변환
-            const coordinate = ol.proj.transform([parseFloat(data.coord.lon), parseFloat(data.coord.lat)], 'EPSG:4326', 'EPSG:3857');
-            const feature = new ol.Feature({
-                geometry: new ol.geom.Point(coordinate),
-                name: 'marker',
-                lon: data.coord.lon,
-                lat: data.coord.lat,
-                bdCode: data.properties.admCode,
-                properties: data.properties ? data.properties : '',
-            });
-
-            if (data.properties.imgType) {
-                feature.setStyle(img[data.properties.imgType]);
-            } else {
-                feature.setStyle(img[0]);
-            }
-
-            vectorSource.addFeature(feature);
+    _createDataVectorSource(datas) {
+    let vectorSource = new ol.source.Vector();
+    datas.forEach(data => {
+        // 좌표를 EPSG:3857으로 변환
+        const coordinate = ol.proj.fromLonLat([parseFloat(data.lon), parseFloat(data.lat)]);
+        const feature = new ol.Feature({
+            geometry: new ol.geom.Point(coordinate),
+            name: 'marker',
+            lon: data.lon,
+            lat: data.lat,
+            bdCode: data.admCode,
+            properties: '',
         });
-        return vectorSource;
-    }
+
+        // 마커 이미지 설정
+        feature.setStyle(new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1], // 이미지의 앵커 위치
+                src: '/img/marker.png', // 마커 이미지 경로
+                scale: 0.05 // 이미지 크기 조정 (필요에 따라 조정 가능)
+            }),
+        }));
+
+        vectorSource.addFeature(feature);
+    });
+    return vectorSource;
+}
+
 
     _updateCluster() {
-        if (!this.layer || this._tempTag == 1) {
-            this._tempTag = 0;
-            return;
-        }
 
-        const zoomLevel = this.map.map.getView().getZoom();
-        if (zoomLevel < this.sdLev) {
-            this.layer.setSource(this.sdVectorSource);
-        } else if (zoomLevel <= this.sggLev) {
-            this.layer.setSource(this.sggVectorSource);
-        } else if (this.dataVectorSource) {
-            this.layer.setSource(this.dataVectorSource);
-        } else {
-            this.layer.setSource(this.sggVectorSource);
+        const zoomLevel = this.map.getView().getZoom();
+        if(this.sdVectorSource != null && this.sggVectorSource != null){
+            console.log("작동")
+            if (zoomLevel < this.sdLev) {
+                this.layer.setSource(this.sdVectorSource);
+            } else if (zoomLevel <= this.sggLev) {
+                this.layer.setSource(this.sggVectorSource);
+            } else if (this.dataVectorSource) {
+                this.layer.setSource(this.dataVectorSource);
+            } else {
+                this.layer.setSource(this.sggVectorSource);
+            }
         }
+       
     }
 
     moveCameraByClusterClick(feature, padding) {
@@ -234,7 +238,7 @@ class H_Cluster {
         if (sggFeatures.length == 1 && this.dataVectorSource) {
             this._moveOneTypeSggExtent(sdBdCodePrefix);
         } else {
-            this.map.map.getView().fit(extent, {
+            this.map.getView().fit(extent, {
                 padding: padding || [70, 70, 70, 70],
                 maxZoom: that.sggLev,
                 duration: 900,
@@ -265,7 +269,7 @@ class H_Cluster {
             markerFeatures.forEach(markerFeature => {
                 ol.extent.extend(extent, markerFeature.getGeometry().getExtent());
             });
-            this.map.map.getView().fit(extent, {
+            this.map.getView().fit(extent, {
                 padding: [70, 70, 70, 70],
                 duration: 900,
                 maxZoom: this.sggLev + 3,
@@ -295,7 +299,7 @@ class H_Cluster {
             markerFeatures.forEach(markerFeature => {
                 ol.extent.extend(extent, markerFeature.getGeometry().getExtent());
             });
-            this.map.map.getView().fit(extent, {
+            this.map.getView().fit(extent, {
                 padding: [70, 70, 70, 70],
                 duration: 900,
                 maxZoom: this.sggLev + 3,
@@ -310,9 +314,19 @@ class H_Cluster {
     }
 
     _removeCluster() {
-        this.map.removeLayer(this.layerName);
+        this.removeLayer(this.layerName);
         this.dataVectorSource = null;
         this.sdVectorSource = null;
         this.sggVectorSource = null;
+    }
+
+
+    removeLayer(name) {
+        const that = this;
+        this.map.getAllLayers().forEach(layer => {
+            if (layer && layer.get('name') == name) {
+                that.map.removeLayer(layer);
+            }
+        });
     }
 }

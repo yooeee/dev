@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.store.dev.dto.AdmDTO;
 import com.store.dev.dto.SearchDTO;
 import com.store.dev.dto.SggDTO;
 import com.store.dev.dto.StoreDTO;
@@ -41,6 +42,16 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public int selectListStoreCountByDistance(SearchDTO searchDTO) {
         return storeMapper.selectListStoreCountByDistance(searchDTO);
+    }
+
+    @Override
+    public List<AdmDTO> selectListSdCluster(SearchDTO searchDTO) {
+       return storeMapper.selectListSdCluster(searchDTO);
+    }
+
+    @Override
+    public List<AdmDTO> selectListSggCluster(SearchDTO searchDTO) {
+        return storeMapper.selectListSggCluster(searchDTO);
     }
 
     

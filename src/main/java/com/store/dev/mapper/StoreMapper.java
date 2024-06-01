@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.store.dev.dto.AdmDTO;
 import com.store.dev.dto.SearchDTO;
 import com.store.dev.dto.SggDTO;
 import com.store.dev.dto.StoreDTO;
@@ -24,11 +25,9 @@ public interface StoreMapper {
     int selectListStoreCountByDistance(SearchDTO searchDTO);
 
 
-
-    // sd 전체 조회
-    
-
-    // 특정 sgg 조회
+    // 클러스터링 sg, sdd
+    List<AdmDTO> selectListSdCluster(SearchDTO searchDTO);
+    List<AdmDTO> selectListSggCluster(SearchDTO searchDTO);
     
 
     

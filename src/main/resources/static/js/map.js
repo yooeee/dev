@@ -1,8 +1,29 @@
 let map;
+const vworld_map = 'http://api.vworld.kr/req/wmts/1.0.0/' + 'F9DAD4D2-2AEA-343D-A6AA-CD5521D300EF' + '/Base/{z}/{y}/{x}.png';
+
+const baseMap = new ol.source.XYZ({
+  url: vworld_map,
+  crossOrigin: 'anonymous',
+  transition: 0,
+});
+map = new ol.Map({
+  target: "map",
+  controls: [],
+  layers: [
+    new ol.layer.Tile({
+      source: baseMap,
+    }),
+  ],
+  view: new ol.View({
+    center: ol.proj.fromLonLat([127.5, 36]), // 대한민국 중심 좌표
+    zoom: 7, // 대한민국 전체가 잘 보이는 줌 레벨
+  })
+});
+
 let vectorLayer; // 벡터 레이어를 전역 변수로 선언
 let myCoords = null; // 현재 좌표
 let resultLayer = null; // 검색결과 레이어
-const vworld_map = 'http://api.vworld.kr/req/wmts/1.0.0/' + 'F9DAD4D2-2AEA-343D-A6AA-CD5521D300EF' + '/Base/{z}/{y}/{x}.png';
+
 
 window.onload = function () {
   initMap();
@@ -10,37 +31,48 @@ window.onload = function () {
 };
 
 function initMap() {
-  const baseMap = new ol.source.XYZ({
-    url: vworld_map,
-    crossOrigin: 'anonymous',
-    transition: 0,
-  });
+ 
 
-  map = new ol.Map({
-    target: "map",
-    controls: [],
-    layers: [
-      new ol.layer.Tile({
-        source: baseMap,
-      }),
-    ],
-    view: new ol.View({
-      center: ol.proj.fromLonLat([127.5, 36]), // 대한민국 중심 좌표
-      zoom: 7, // 대한민국 전체가 잘 보이는 줌 레벨
-    })
-  });
+    document.getElementById("address-info").addEventListener("click", function() {
+      checkGeolocationPermissionAndUpdate();
+    });
+    checkGeolocationPermissionAndUpdate();
 
-  document.getElementById("address-info").addEventListener("click", function() {
-    updateLocation(map);
-  });
-  updateLocation(map);
+ 
 }
 
 function setMapEvent() {
 
 }
 
-function updateLocation(map) {
+function checkGeolocationPermissionAndUpdate() {
+  navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
+    if (result.state === 'granted') {
+      console.log('위치 권한이 허락되었습니다.');
+      updateLocation(map, 1500);
+    } else if (result.state === 'prompt') {
+      console.log('위치 권한 요청 중입니다.');
+      // 위치 권한을 요청하여 기본 브라우저 알림이 표시되도록 합니다.
+      navigator.geolocation.getCurrentPosition(function (position) {
+        updateLocation(map, 1500);
+      });
+    } else if (result.state === 'denied') {
+      console.log('위치 권한 요청 중입니다.');
+      // 위치 권한을 요청하여 기본 브라우저 알림이 표시되도록 합니다.
+      navigator.geolocation.getCurrentPosition(function (position) {
+        updateLocation(map, 1500);
+      }, function (error) {
+        console.error("Geolocation error: ", error);
+      });
+    }
+    result.onchange = function () {
+      console.log('위치 권한 상태가 변경되었습니다.');
+    }
+  });
+}
+
+
+function updateLocation(map,radius) {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(function (position) {
       myCoords = [position.coords.longitude, position.coords.latitude];
@@ -54,7 +86,7 @@ function updateLocation(map) {
       const vectorSource = new ol.source.Vector({
         features: [
           new ol.Feature(new ol.geom.Point(olCoords)),
-          new ol.Feature(new ol.geom.Circle(olCoords, 2000))
+          new ol.Feature(new ol.geom.Circle(olCoords, radius))
         ]
       });
 

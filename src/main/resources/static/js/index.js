@@ -1,6 +1,6 @@
 let currentPage = 1;
 const itemsPerPage = 10;
-
+let cluster = new H_Cluster(map, { layerName: 'cluster' });
 document.addEventListener('DOMContentLoaded', function () {
     initIndex();
     setInitEvent();
@@ -158,8 +158,10 @@ function getSearchList(page) {
                 // 페이지 번호 업데이트
                 updatePagination(result.resultCnt);
 
-                   // 지도에 결과 표시
-                   displayResultsOnMap(result.result);
+                // 지도에 결과 표시
+                displayResultsOnMap(result.result);
+
+                cluster.createAdmbdClusterLayer(result.result, result.sdResult, result.sggResult);
             }
             else {
                 console.log("fail search");
@@ -186,10 +188,10 @@ function displayResultsOnMap(results) {
     resultLayer = new ol.layer.Vector({
         source: vectorSource,
         style: new ol.style.Style({
-            image: new ol.style.Circle({
-                radius: 6,
-                fill: new ol.style.Fill({ color: 'red' }),
-                stroke: new ol.style.Stroke({ color: 'white', width: 2 }),
+            image: new ol.style.Icon({
+                anchor: [0.5, 1], // 이미지의 앵커 위치
+                src: '/img/marker.png', // 마커 이미지 경로
+                scale: 0.05 // 이미지 크기 조정 (필요에 따라 조정 가능)
             }),
         }),
     });
