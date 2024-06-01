@@ -2,12 +2,12 @@ let currentPage = 1;
 const itemsPerPage = 10;
 
 document.addEventListener('DOMContentLoaded', function () {
-    init();
+    initIndex();
     setInitEvent();
 
 });
 
-function init() {
+function initIndex() {
     /**
      * TODO
      * 1. 위치권한 여부 파악 
@@ -35,15 +35,11 @@ function setInitEvent() {
     
     // 조건버튼 이벤트 시작
     document.getElementById('locationDropdown').querySelectorAll('select').forEach(select => {
-        select.addEventListener('change', function () {
-            checkAndToggleActiveState('locationDropdown', document.querySelector('.button-active[onclick*="locationDropdown"]'));
-        });
+
     });
 
     document.getElementById('categoryDropdown').querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', function () {
-            checkAndToggleActiveState('categoryDropdown', document.querySelector('.button-active[onclick*="categoryDropdown"]'));
-        });
+
     });
     // 조건버튼 이벤트 종료
 
@@ -161,6 +157,9 @@ function getSearchList(page) {
 
                 // 페이지 번호 업데이트
                 updatePagination(result.resultCnt);
+
+                   // 지도에 결과 표시
+                   displayResultsOnMap(result.result);
             }
             else {
                 console.log("fail search");
@@ -168,6 +167,47 @@ function getSearchList(page) {
         })
         .catch(error => console.error('There was a problem with your fetch operation:', error));
 
+}
+
+function displayResultsOnMap(results) {
+    if (resultLayer) {
+        map.removeLayer(resultLayer);
+    }
+
+    const features = results.map(item => {
+        const coordinates3857 = [parseFloat(item.lon), parseFloat(item.lat)]; // EPSG:3857 좌표
+        return new ol.Feature(new ol.geom.Point(coordinates3857));
+    });
+
+    const vectorSource = new ol.source.Vector({
+        features: features
+    });
+
+    resultLayer = new ol.layer.Vector({
+        source: vectorSource,
+        style: new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 6,
+                fill: new ol.style.Fill({ color: 'red' }),
+                stroke: new ol.style.Stroke({ color: 'white', width: 2 }),
+            }),
+        }),
+    });
+
+
+    map.addLayer(resultLayer);
+
+    // 첫 번째 검색 결과의 좌표로 지도 이동
+    // if (results.length > 0) {
+    //     const firstItem = results[0];
+    //     const firstCoordinates3857 = [parseFloat(firstItem.lon), parseFloat(firstItem.lat)]; // EPSG:3857 좌표
+
+    //     // 디버그용 로그
+    //     console.log("First Coordinates (EPSG:3857):", firstCoordinates3857);
+
+    //     map.getView().setCenter(firstCoordinates3857);
+    //     map.getView().setZoom(9); // 원하는 줌 레벨로 설정
+    // }
 }
 
 function updatePagination(totalCount) {

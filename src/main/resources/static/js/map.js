@@ -1,26 +1,32 @@
 let map;
 let vectorLayer; // 벡터 레이어를 전역 변수로 선언
 let myCoords = null; // 현재 좌표
+let resultLayer = null; // 검색결과 레이어
+const vworld_map = 'http://api.vworld.kr/req/wmts/1.0.0/' + 'F9DAD4D2-2AEA-343D-A6AA-CD5521D300EF' + '/Base/{z}/{y}/{x}.png';
 
 window.onload = function () {
-  init();
+  initMap();
   setMapEvent();
 };
 
-function init() {
-  
+function initMap() {
+  const baseMap = new ol.source.XYZ({
+    url: vworld_map,
+    crossOrigin: 'anonymous',
+    transition: 0,
+  });
+
   map = new ol.Map({
     target: "map",
     controls: [],
     layers: [
       new ol.layer.Tile({
-        source: new ol.source.OSM(),
+        source: baseMap,
       }),
     ],
     view: new ol.View({
       center: ol.proj.fromLonLat([127.5, 36]), // 대한민국 중심 좌표
-      // zoom: 7, // 대한민국 전체가 잘 보이는 줌 레벨
-      // minZoom: 6.5
+      zoom: 7, // 대한민국 전체가 잘 보이는 줌 레벨
     })
   });
 

@@ -107,6 +107,7 @@
         </if>
     </where>
     ORDER BY distance_in_meter ASC
+    LIMIT #{maxIndex} OFFSET ( #{page} - 1 ) * 10
 </select>
 
 
