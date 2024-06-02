@@ -127,12 +127,16 @@ img {
     background-color: var(--accent-color);
 }
 
-.address-info {
+#address-info {
+    position: absolute;
+    top: 10px; /* 상단으로부터의 거리 */
+    right: 10px; /* 우측으로부터의 거리 */
     background-color: white;
     border: 1px solid var(--secondary-color);
     border-radius: 4px;
     padding: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* 지도 위에 표시하기 위해 높은 z-index 설정 */
 }
 
 
