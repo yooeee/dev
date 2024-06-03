@@ -6,6 +6,15 @@ let cluster = new H_Cluster(map, { layerName: 'cluster' });
 let container = document.getElementById('popup');
 let content = document.getElementById('popup-content');
 let closer = document.getElementById('popup-closer');
+// 현재 아이템을 저장할 변수
+let currentItem = null;
+
+// 팝업 클릭 이벤트
+content.onclick = function () {
+    if (currentItem) {
+        fetchAdditionalInfo(currentItem);
+    }
+}
 
 // 팝업 초기화
 let overlay = new ol.Overlay({
@@ -128,6 +137,7 @@ function setInitEvent() {
 }
 
 function getSearchList(page) {
+    closer.click();
 
     const keyword = document.getElementById('keyword').value;
     const type1 = document.getElementById('type1').value;
@@ -210,10 +220,12 @@ function getSearchList(page) {
 
 // 지도 이동 함수
 function moveToMapCoordinates(item) {
+
+    currentItem = item;
     // 팝업 내용 설정
-    content.innerHTML = `<strong>${item.name}</strong><br>${item.doro}`;
+    content.innerHTML = `<strong>${item.name}</strong>`;
     // 팝업 위치 설정
-    overlay.setPosition( [parseFloat(item.lon), parseFloat(item.lat)]);
+    overlay.setPosition( [parseFloat(item.lon), parseFloat(item.lat)+6.5]);
     
     // OpenLayers 예시
     let view = map.getView();
@@ -343,6 +355,24 @@ function toggleDropdown(id, button) {
         // 드롭다운이 닫힐 때, 언제나 비활성 상태로 설정
         button.classList.remove('button-active');
     }
+}
+
+
+// 추가 정보 요청 함수
+function fetchAdditionalInfo(item) {
+    const data = {
+        name : item.name,
+        doro : item.doro
+    }
+
+    fetch('/api/detail?' +  new URLSearchParams(data).toString(), {
+        method: 'GET',
+    })
+        .then(data => {
+            console.log('Additional Info:', data);
+            // 추가 정보를 처리하는 코드를 여기에 추가합니다
+        })
+        .catch(error => console.error('There was a problem with your fetch operation:', error));
 }
 
 
