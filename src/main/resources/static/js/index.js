@@ -1,6 +1,33 @@
 let currentPage = 1;
 const itemsPerPage = 10;
 let cluster = new H_Cluster(map, { layerName: 'cluster' });
+
+// 팝업 요소 가져오기
+let container = document.getElementById('popup');
+let content = document.getElementById('popup-content');
+let closer = document.getElementById('popup-closer');
+
+// 팝업 초기화
+let overlay = new ol.Overlay({
+    element: container,
+    autoPan: true,
+    autoPanAnimation: {
+        duration: 250,
+    },
+});
+
+map.addOverlay(overlay);
+
+// 팝업 닫기 이벤트
+closer.onclick = function () {
+    overlay.setPosition(undefined);
+    closer.blur();
+    return false;
+};
+
+
+
+
 document.addEventListener('DOMContentLoaded', function () {
     initIndex();
     setInitEvent();
@@ -142,25 +169,35 @@ function getSearchList(page) {
                 let totalCount = document.querySelector('.total-count');
                 let searchItemsContainer = document.querySelector('.search-items-container');
                 let template = document.getElementById('searchItemTpl');
-
+    
                 // 검색 결과 초기화
                 searchItemsContainer.innerHTML = '';
                 totalCount.textContent = result.resultCnt;
-
+    
                 // 검색 결과 항목 추가
                 result.result.forEach(item => {
                     let clone = template.content.cloneNode(true);
-                    clone.querySelector('.restaurant-name').textContent = item.name;
-                    clone.querySelector('.restaurant-address').textContent = item.doro;
+                    let searchItem = clone.querySelector('.search-item');
+    
+                    // 검색 항목에 데이터 설정
+                    searchItem.querySelector('.restaurant-name').textContent = item.name;
+                    searchItem.querySelector('.restaurant-address').textContent = item.doro;
+    
+                    // 클릭 이벤트 추가
+                    searchItem.addEventListener('click', () => {
+                        // 지도 이동 함수 호출
+                        moveToMapCoordinates(item);
+                    });
+    
                     searchItemsContainer.appendChild(clone);
                 });
-
+    
                 // 페이지 번호 업데이트
                 updatePagination(result.resultCnt);
-
+    
                 // 지도에 결과 표시
                 displayResultsOnMap(result.result);
-
+    
                 cluster.createAdmbdClusterLayer(result.result, result.sdResult, result.sggResult);
             }
             else {
@@ -169,6 +206,21 @@ function getSearchList(page) {
         })
         .catch(error => console.error('There was a problem with your fetch operation:', error));
 
+}
+
+// 지도 이동 함수
+function moveToMapCoordinates(item) {
+    // 팝업 내용 설정
+    content.innerHTML = `<strong>${item.name}</strong><br>${item.doro}`;
+    // 팝업 위치 설정
+    overlay.setPosition( [parseFloat(item.lon), parseFloat(item.lat)]);
+    
+    // OpenLayers 예시
+    let view = map.getView();
+    view.setCenter( [parseFloat(item.lon), parseFloat(item.lat)]);
+    view.setZoom(18);
+
+    
 }
 
 function displayResultsOnMap(results) {

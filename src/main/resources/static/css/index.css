@@ -222,5 +222,30 @@ img {
     color: white;
 }
 
+.ol-popup {
+    position: absolute;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 12px;
+    left: -50px;
+    min-width: 200px;
+}
+
+.ol-popup-closer {
+    text-decoration: none;
+    position: absolute;
+    top: 2px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    font-weight: bold;
+}
+
+.ol-popup-closer:after {
+    content: "✖";
+}
+
+
 
 
