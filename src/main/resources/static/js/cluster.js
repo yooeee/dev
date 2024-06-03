@@ -55,7 +55,7 @@ class H_Cluster {
             if (count == 0) {
                 return;
             }
-            let size = 0;
+            let size = 100;
 
             if (this.clusterScale == 0) {
                 if (count < 10) {
@@ -121,7 +121,7 @@ class H_Cluster {
             if (count == 0) {
                 return;
             }
-            let size = 0;
+            let size = 40;
             if (count < 10) {
                 size = 20;
             } else if (count < 50) {
@@ -199,19 +199,35 @@ class H_Cluster {
     _updateCluster() {
 
         const zoomLevel = this.map.getView().getZoom();
-        if(this.sdVectorSource != null && this.sggVectorSource != null){
-            console.log("작동")
+        if(this.sdVectorSource != null && this.sggVectorSource != null && document.getElementById('type1').value != 'my'){
             if (zoomLevel < this.sdLev) {
                 this.layer.setSource(this.sdVectorSource);
+                
             } else if (zoomLevel <= this.sggLev) {
                 this.layer.setSource(this.sggVectorSource);
+                
             } else if (this.dataVectorSource) {
                 this.layer.setSource(this.dataVectorSource);
             } else {
                 this.layer.setSource(this.sggVectorSource);
             }
         }
+        if(document.getElementById('type1').value == 'my'){
+            this.layer.setSource(this.dataVectorSource);
+        }
        
+    }
+
+    showLayer(name) {
+        this.map.getAllLayers().forEach(layer => {
+            if (layer.get('name') == name) layer.setVisible(true);
+        });
+    }
+
+    hideLayer(name) {
+        this.map.getAllLayers().forEach(layer => {
+            if (layer.get('name') == name) layer.setVisible(false);
+        });
     }
 
     moveCameraByClusterClick(feature, padding) {

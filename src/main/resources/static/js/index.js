@@ -20,9 +20,6 @@ content.onclick = function () {
 let overlay = new ol.Overlay({
     element: container,
     autoPan: true,
-    autoPanAnimation: {
-        duration: 250,
-    },
 });
 
 map.addOverlay(overlay);
@@ -34,13 +31,9 @@ closer.onclick = function () {
     return false;
 };
 
-
-
-
 document.addEventListener('DOMContentLoaded', function () {
     initIndex();
     setInitEvent();
-
 });
 
 function initIndex() {
@@ -53,7 +46,6 @@ function initIndex() {
 }
 
 function setInitEvent() {
-
     // 페이징버튼 시작
     document.querySelector('.prev-button').addEventListener('click', () => {
         if (currentPage > 1) {
@@ -68,17 +60,11 @@ function setInitEvent() {
     });
     // 페이징버튼 종료
 
-    
     // 조건버튼 이벤트 시작
-    document.getElementById('locationDropdown').querySelectorAll('select').forEach(select => {
+    document.getElementById('locationDropdown').querySelectorAll('select').forEach(select => { });
 
-    });
-
-    document.getElementById('categoryDropdown').querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-
-    });
+    document.getElementById('categoryDropdown').querySelectorAll('input[type="checkbox"]').forEach(checkbox => { });
     // 조건버튼 이벤트 종료
-
 
     // 검색버튼 이벤트
     document.getElementById('searchBtn').addEventListener('click', function () {
@@ -92,15 +78,15 @@ function setInitEvent() {
     });
 
     // type1 이벤트
-    document.getElementById('type1').addEventListener('change', function(e) {
+    document.getElementById('type1').addEventListener('change', function (e) {
         let selectedValue = e.target.value;
         let type2 = document.getElementById('type2');
 
-      if(selectedValue == "all"){
+        if (selectedValue == "all") {
             type2.innerHTML = '<option value="all" disabled selected>시/군/구</option>';
         } else if (selectedValue == "my") {
             type2.innerHTML = '<option value="" disabled selected>내 반경</option>';
-            
+
             let distances = [500, 1000, 1500, 2000];
             distances.forEach(distance => {
                 let option = document.createElement('option');
@@ -108,41 +94,35 @@ function setInitEvent() {
                 option.textContent = `${distance}M`;
                 type2.appendChild(option);
             });
-        }  else {
+        } else {
             fetch(`/api/bjcd/sgg?bjcd=${selectedValue}`)
-            .then(response => response.json())
-            .then(data => {
-    
-                
-                type2.innerHTML = '<option value="all" disabled selected>시/군/구</option>';
-    
-                // 가져온 데이터를 반복하여 option 요소를 생성하고 추가
-                data.result.forEach(item => {
-                    let option = document.createElement('option');
-                    option.value = item.bjcd;
-                    option.textContent = item.name;
-                    type2.appendChild(option);
+                .then(response => response.json())
+                .then(data => {
+                    type2.innerHTML = '<option value="all" disabled selected>시/군/구</option>';
+
+                    // 가져온 데이터를 반복하여 option 요소를 생성하고 추가
+                    data.result.forEach(item => {
+                        let option = document.createElement('option');
+                        option.value = item.bjcd;
+                        option.textContent = item.name;
+                        type2.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // 에러 처리를 여기에 작성합니다.
                 });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // 에러 처리를 여기에 작성합니다.
-            });
         }
-       
-
-       
     });
-
 }
 
 function getSearchList(page) {
-    closer.click();
+
 
     const keyword = document.getElementById('keyword').value;
     const type1 = document.getElementById('type1').value;
     const type2 = document.getElementById('type2').value;
-    if(keyword.length === 0){
+    if (keyword.length === 0) {
         alert("검색어를 입력해주세요.");
         return;
     }
@@ -153,19 +133,17 @@ function getSearchList(page) {
         type1: type1,
         type2: type2,
     };
-    
 
-    if(type1 == "my"){
+    if (type1 == "my") {
         data.lon = myCoords[0] + '';
         data.lat = myCoords[1] + '';
     }
-
 
     const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
     const categorys = Array.from(checkboxes).map(checkbox => checkbox.value);
     data.category = categorys;
 
-    fetch('/api/store?' +  new URLSearchParams(data).toString(), {
+    fetch('/api/store?' + new URLSearchParams(data).toString(), {
         method: 'GET',
     })
         .then(response => {
@@ -176,117 +154,143 @@ function getSearchList(page) {
         })
         .then(result => {
             if (result.status == 'success') {
+                // 지도에 추가된 모든 오버레이를 제거
+                map.getOverlays().clear();
+
 
                 // 반경조회
                 if (type1 == 'my') {
                     // type2를 숫자로 변환
                     let type2Number = parseInt(type2, 10);
                     updateLocation(map, type2Number);
-                }
-                else {
+                } else {
                     cluster.createAdmbdClusterLayer(result.result, result.sdResult, result.sggResult);
                 }
-
 
                 let totalCount = document.querySelector('.total-count');
                 let searchItemsContainer = document.querySelector('.search-items-container');
                 let template = document.getElementById('searchItemTpl');
-    
+
                 // 검색 결과 초기화
                 searchItemsContainer.innerHTML = '';
                 totalCount.textContent = result.resultCnt;
-    
+
                 // 검색 결과 항목 추가
                 result.result.forEach(item => {
                     let clone = template.content.cloneNode(true);
                     let searchItem = clone.querySelector('.search-item');
-    
+
                     // 검색 항목에 데이터 설정
                     searchItem.querySelector('.restaurant-name').textContent = item.name;
                     searchItem.querySelector('.restaurant-address').textContent = item.doro;
-    
+
                     // 클릭 이벤트 추가
                     searchItem.addEventListener('click', () => {
                         // 지도 이동 함수 호출
                         moveToMapCoordinates(item);
                     });
-    
+
                     searchItemsContainer.appendChild(clone);
                 });
-    
+
                 // 페이지 번호 업데이트
                 updatePagination(result.resultCnt);
-    
+
                 // 지도에 결과 표시
-                displayResultsOnMap(result.result);
-
-
-                
-            }
-            else {
+                displayMarker(result.result);
+            } else {
                 console.log("fail search");
             }
         })
         .catch(error => console.error('There was a problem with your fetch operation:', error));
-
 }
 
 // 지도 이동 함수
 function moveToMapCoordinates(item) {
 
-    currentItem = item;
-    // 팝업 내용 설정
-    content.innerHTML = `<strong>${item.name}</strong>`;
-    // 팝업 위치 설정
-    overlay.setPosition( [parseFloat(item.lon), parseFloat(item.lat)+6.5]);
-    
     // OpenLayers 예시
     let view = map.getView();
-    view.setCenter( [parseFloat(item.lon), parseFloat(item.lat)]);
+    view.setCenter([parseFloat(item.lon), parseFloat(item.lat)]);
     view.setZoom(18);
-
-    
 }
 
-function displayResultsOnMap(results) {
+
+function displayMarker(results) {
     if (resultLayer) {
         map.removeLayer(resultLayer);
     }
 
     const features = results.map(item => {
-        const coordinates3857 = [parseFloat(item.lon), parseFloat(item.lat)]; // EPSG:3857 좌표
-        return new ol.Feature(new ol.geom.Point(coordinates3857));
+        const coordinates3857 = [parseFloat(item.lon), parseFloat(item.lat)]; // EPSG:3857 좌표로 가정
+        const feature = new ol.Feature(new ol.geom.Point(coordinates3857));
+        feature.setProperties(item); // 마커와 관련된 데이터 저장
+        return feature;
     });
 
-    const vectorSource = new ol.source.Vector({
-        features: features
-    });
+    const vectorSource = new ol.source.Vector({ features: features });
 
     resultLayer = new ol.layer.Vector({
+        name : 'resultLayer',
         source: vectorSource,
         style: new ol.style.Style({
             image: new ol.style.Icon({
-                anchor: [0.5, 1], // 이미지의 앵커 위치
-                src: '/img/marker.png', // 마커 이미지 경로
-                scale: 0.05 // 이미지 크기 조정 (필요에 따라 조정 가능)
-            }),
-        }),
+                anchor: [0.5, 1],
+                src: '/img/marker.png',
+                scale: 0.05
+            })
+        })
     });
-
 
     map.addLayer(resultLayer);
 
-    // 첫 번째 검색 결과의 좌표로 지도 이동
-    // if (results.length > 0) {
-    //     const firstItem = results[0];
-    //     const firstCoordinates3857 = [parseFloat(firstItem.lon), parseFloat(firstItem.lat)]; // EPSG:3857 좌표
+    if (document.getElementById('type1') != 'my') {
+        if (document.getElementById('type1').value == 'all') {
+            let view = map.getView();
+            view.setCenter(ol.proj.fromLonLat([127.5, 36]));  // olCoords는 변경하고자 하는 중심 좌표
+            view.setZoom(7);
+        } else {
+            // 검색 결과 좌표들에 맞게 지도 뷰 조정
+            const extent = vectorSource.getExtent();
+            map.getView().fit(extent, {
+                size: map.getSize(),
+                padding: [200, 200, 200, 200]
+            });
+            console.log(extent);
 
-    //     // 디버그용 로그
-    //     console.log("First Coordinates (EPSG:3857):", firstCoordinates3857);
+        }
 
-    //     map.getView().setCenter(firstCoordinates3857);
-    //     map.getView().setZoom(9); // 원하는 줌 레벨로 설정
-    // }
+
+    }
+
+    // 각 검색 결과에 대해 오버레이 팝업 추가
+    results.forEach(item => {
+        addPopupToMap(item);
+    });
+}
+
+function addPopupToMap(item) {
+    // 새로운 팝업 요소 생성
+    let newContainer = document.createElement('div');
+    newContainer.className = 'ol-popup';
+    let newContent = document.createElement('div');
+    newContent.innerHTML = `<strong>${item.name}</strong>`;
+
+    newContainer.addEventListener('click', () => {
+        fetchAdditionalInfo(item);
+    });
+
+    newContainer.appendChild(newContent);
+
+    // 새로운 팝업 초기화
+    let newOverlay = new ol.Overlay({
+        element: newContainer,
+        autoPan: true,
+    });
+
+    map.addOverlay(newOverlay);
+
+    // 팝업 위치 설정
+    newOverlay.setPosition([parseFloat(item.lon), parseFloat(item.lat)]);
 }
 
 function updatePagination(totalCount) {
@@ -341,6 +345,7 @@ function updatePagination(totalCount) {
     });
     paginationContainer.appendChild(nextButton);
 }
+
 function toggleDropdown(id, button) {
     // 모든 드롭다운 메뉴를 가져옴
     const allDropdowns = document.querySelectorAll('.filter-dropdown');
@@ -370,22 +375,20 @@ function toggleDropdown(id, button) {
     }
 }
 
-
 // 추가 정보 요청 함수
 function fetchAdditionalInfo(item) {
-    const data = {
-        name : item.name,
-        doro : item.doro
-    }
+    alert("창");
+    // const data = {
+    //     name: item.name,
+    //     doro: item.doro
+    // }
 
-    fetch('/api/detail?' +  new URLSearchParams(data).toString(), {
-        method: 'GET',
-    })
-        .then(data => {
-            console.log('Additional Info:', data);
-            // 추가 정보를 처리하는 코드를 여기에 추가합니다
-        })
-        .catch(error => console.error('There was a problem with your fetch operation:', error));
+    // fetch('/api/detail?' + new URLSearchParams(data).toString(), {
+    //     method: 'GET',
+    // })
+    //     .then(data => {
+    //         console.log('Additional Info:', data);
+    //         // 추가 정보를 처리하는 코드를 여기에 추가합니다
+    //     })
+    //     .catch(error => console.error('There was a problem with your fetch operation:', error));
 }
-
-

@@ -43,6 +43,19 @@ function initMap() {
 
 function setMapEvent() {
 
+  // 지도 클릭 이벤트 설정
+  map.on('singleclick', function (e) {
+    map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+        // 해당 피처의 데이터를 사용하여 추가 정보 가져오기
+        if (layer === resultLayer) {
+            const item = feature.getProperties();
+            fetchAdditionalInfo(item);
+        }
+    });
+});
+
+
+
 }
 
 function checkGeolocationPermissionAndUpdate() {
@@ -72,12 +85,14 @@ function checkGeolocationPermissionAndUpdate() {
 }
 
 
-function updateLocation(map,radius) {
+function updateLocation(map, radius) {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(function (position) {
       myCoords = [position.coords.longitude, position.coords.latitude];
       const olCoords = ol.proj.fromLonLat(myCoords);
-      map.getView().animate({ center: olCoords, zoom: 14 });
+      let view = map.getView();
+      view.setCenter(olCoords);  // olCoords는 변경하고자 하는 중심 좌표
+      view.setZoom(14);
 
       if (vectorLayer) {
         map.removeLayer(vectorLayer);
@@ -129,4 +144,12 @@ function fetchAddress(coords) {
       document.getElementById("address-info").innerHTML = `현재 위치: ${data.display_name}`;
     })
     .catch(error => console.error("역지오코딩 에러:", error));
+}
+
+function removeLayer(name) {
+  map.getAllLayers().forEach(layer => {
+      if (layer && layer.get('name') == name) {
+          map.removeLayer(layer);
+      }
+  });
 }
