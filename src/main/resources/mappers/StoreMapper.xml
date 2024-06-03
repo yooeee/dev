@@ -66,6 +66,7 @@
 <!-- 내 반경 검색 -->
 <select id="selectListStoreByDistance" parameterType="com.store.dev.dto.SearchDTO" resultType="com.store.dev.dto.StoreDTO">
     SELECT 
+        seq,
         jibeon, 
         doro, 
         name, 

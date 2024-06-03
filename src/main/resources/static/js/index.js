@@ -376,12 +376,25 @@ function toggleDropdown(id, button) {
 }
 
 // 추가 정보 요청 함수
+
 function fetchAdditionalInfo(item) {
-    alert("창");
-    // const data = {
-    //     name: item.name,
-    //     doro: item.doro
-    // }
+    const data = {
+        seq : item.seq,
+        category : item.category,
+        name: item.name,
+        doro: item.doro
+    }
+    
+    let popupX = document.body.offsetWidth / 2 - 1110 / 2;
+    popupX += window.screenLeft;
+    let popupY = window.screen.height / 2 - 762 / 2;
+    return window.open(
+        '/index/info?' + new URLSearchParams(data).toString(),
+        '_blank',
+        'toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=1350, height=762, left=' + popupX + ', top=' + popupY
+    );
+
+    
 
     // fetch('/api/detail?' + new URLSearchParams(data).toString(), {
     //     method: 'GET',
