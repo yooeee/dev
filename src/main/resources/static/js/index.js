@@ -176,6 +176,18 @@ function getSearchList(page) {
         })
         .then(result => {
             if (result.status == 'success') {
+
+                // 반경조회
+                if (type1 == 'my') {
+                    // type2를 숫자로 변환
+                    let type2Number = parseInt(type2, 10);
+                    updateLocation(map, type2Number);
+                }
+                else {
+                    cluster.createAdmbdClusterLayer(result.result, result.sdResult, result.sggResult);
+                }
+
+
                 let totalCount = document.querySelector('.total-count');
                 let searchItemsContainer = document.querySelector('.search-items-container');
                 let template = document.getElementById('searchItemTpl');
@@ -207,8 +219,9 @@ function getSearchList(page) {
     
                 // 지도에 결과 표시
                 displayResultsOnMap(result.result);
-    
-                cluster.createAdmbdClusterLayer(result.result, result.sdResult, result.sggResult);
+
+
+                
             }
             else {
                 console.log("fail search");
