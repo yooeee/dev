@@ -202,8 +202,11 @@ class H_Cluster {
         if(this.sdVectorSource != null && this.sggVectorSource != null && document.getElementById('type1').value != 'my'){
             if (zoomLevel < this.sdLev) {
                 this.layer.setSource(this.sdVectorSource);
-                let popUps = document.getElementsByClassName('.ol-popup');
-                
+                let popUps = document.getElementsByClassName('ol-popup'); // 클래스 명 앞에 '.'을 제거합니다.
+
+                for (let i = 0; i < popUps.length; i++) {
+                    popUps[i].style.display = 'none';
+                }
 
                 
             } else if (zoomLevel <= this.sggLev) {

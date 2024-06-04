@@ -46,13 +46,31 @@ function setMapEvent() {
   // 지도 클릭 이벤트 설정
   map.on('singleclick', function (e) {
     map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-        // 해당 피처의 데이터를 사용하여 추가 정보 가져오기
-        if (layer === resultLayer) {
-            const item = feature.getProperties();
-            fetchAdditionalInfo(item);
-        }
+      // 해당 피처의 데이터를 사용하여 추가 정보 가져오기
+      if (layer === resultLayer) {
+        const item = feature.getProperties();
+        fetchAdditionalInfo(item);
+      }
     });
-});
+
+
+    map.on('moveend', event => {
+
+      const zoomLevel = map.getView().getZoom();
+      if (document.getElementById('type1') != my) {
+        let popUps = document.getElementsByClassName('ol-popup');
+        if (zoomLevel < 10) {
+          for (let i = 0; i < popUps.length; i++) {
+            popUps[i].style.display = 'none';
+          }
+        } else {
+          for (let i = 0; i < popUps.length; i++) {
+            popUps[i].style.display = '';
+          }
+        }
+      }
+    });
+  });
 
 
 
