@@ -15,6 +15,6 @@ public class StoreDTO {
     private double lon;
     private double lat;
     private String admCode;
-    private double distanceInMeter;
+    private double distance;
     private double transformedPoint;
 }

@@ -61,8 +61,6 @@
         </where>
 
     </select>
-
-
 <!-- 내 반경 검색 -->
 <select id="selectListStoreByDistance" parameterType="com.store.dev.dto.SearchDTO" resultType="com.store.dev.dto.StoreDTO">
     SELECT 
@@ -73,16 +71,20 @@
         category, 
         lon, 
         lat,
-        public.ST_Distance(
-            public.ST_SetSRID(
-                public.ST_MakePoint(lon, lat), 3857
-            ),
-            public.ST_Transform(
-                public.ST_SetSRID(
-                    public.ST_MakePoint(#{lon}, #{lat}), 4326
-                ), 3857
-            )
-        ) AS distance_in_meter
+        ROUND(
+            CAST(
+                public.ST_Distance(
+                    public.ST_SetSRID(
+                        public.ST_MakePoint(lon, lat), 3857
+                    ),
+                    public.ST_Transform(
+                        public.ST_SetSRID(
+                            public.ST_MakePoint(#{lon}, #{lat}), 4326
+                        ), 3857
+                    )
+                ) AS numeric
+            ), 1
+        ) AS distance
     FROM 
         store
     <where>
@@ -107,7 +109,7 @@
             </foreach>
         </if>
     </where>
-    ORDER BY distance_in_meter ASC
+    ORDER BY distance ASC, name ASC
     LIMIT #{maxIndex} OFFSET ( #{page} - 1 ) * 10
 </select>
 
@@ -117,8 +119,8 @@
 
     <!-- 내 반경 카운트 검색 -->
     <select id="selectListStoreCountByDistance" parameterType="com.store.dev.dto.SearchDTO" resultType="int">
-      SELECT 
-        count(store.*)
+     SELECT 
+        count(*)
     FROM 
         store
     <where>
@@ -143,7 +145,6 @@
             </foreach>
         </if>
     </where>
-   
     </select>
 
 

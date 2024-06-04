@@ -43,6 +43,8 @@ function initIndex() {
      * 1-1 권한 승인 : 내 위치 반경 1미터 조건 검색적용
      * 1-2 권한 거부 : 한반도 전체 영역 표시, 
      */
+
+
 }
 
 function setInitEvent() {
@@ -181,7 +183,7 @@ function getSearchList(page) {
                     let searchItem = clone.querySelector('.search-item');
 
                     // 검색 항목에 데이터 설정
-                    searchItem.querySelector('.restaurant-name').textContent = item.name;
+                    searchItem.querySelector('.restaurant-name').textContent = item.name + '(' + item.distance + ' M)';
                     searchItem.querySelector('.restaurant-address').textContent = item.doro;
 
                     // 클릭 이벤트 추가

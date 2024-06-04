@@ -35,8 +35,8 @@
             <div class="filter-options">
                 <div id="locationDropdown" class="filter-dropdown">
                     <select class="form-select" id="type1">
-                        <option value="all" selected>전체</option>
-                        <option value="my">내 반경</option>
+                        <option value="all" >전체</option>
+                        <option value="my" selected>내 반경</option>
                         <option value="11">서울특별시</option>
                         <option value="26">부산광역시</option>
                         <option value="27">대구광역시</option>
@@ -55,10 +55,13 @@
                         <option value="50">제주특별자치도</option>
                     </select>
                     <select class="form-select" id="type2">
-                        <option value="" disabled selected>시/군/구</option>
-                        <!-- TODO DB 시군구 조회해서 뿌리기 -->
+                        <option value="" disabled="" selected="">내 반경</option>
+                        <option value="500">500M</option>
+                        <option value="1000">1000M</option>
+                        <option value="1500" selected>1500M</option>
+                        <option value="2000">2000M</option>
                     </select>
-                </div>
+                    </div>
                 <div id="categoryDropdown" class="filter-dropdown" style="display: none;">
                     <div class="checkbox-group">
                         <label><input type="checkbox" value="감성주점"> 감성주점</label><br>

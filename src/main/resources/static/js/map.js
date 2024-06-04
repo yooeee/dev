@@ -63,11 +63,55 @@ function checkGeolocationPermissionAndUpdate() {
     if (result.state === 'granted') {
       console.log('위치 권한이 허락되었습니다.');
       updateLocation(map, 1500);
+        let selectElement = document.getElementById('type1');
+        let selectElement2 = document.getElementById('type2');
+        let options = selectElement.options;
+        let options2 = selectElement2.options;
+
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].value === 'my') {
+            selectElement.selectedIndex = i;
+            break;
+          }
+        }
+
+        for (var i = 0; i < options2.length; i++) {
+          if (options[i].value === '1500') {
+            selectElement.selectedIndex = i;
+            break;
+          }
+        }
+        
+        // 1초(1000밀리초) 후에 getSearchList(1) 함수 호출
+setTimeout(function() {
+  getSearchList(1);
+}, 500);
+
     } else if (result.state === 'prompt') {
       console.log('위치 권한 요청 중입니다.');
       // 위치 권한을 요청하여 기본 브라우저 알림이 표시되도록 합니다.
       navigator.geolocation.getCurrentPosition(function (position) {
         updateLocation(map, 1500);
+        let selectElement = document.getElementById('type1');
+        let selectElement2 = document.getElementById('type2');
+        let options = selectElement.options;
+        let options2 = selectElement2.options;
+
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].value === 'my') {
+            selectElement.selectedIndex = i;
+            break;
+          }
+        }
+
+        for (var i = 0; i < options2.length; i++) {
+          if (options[i].value === '1500') {
+            selectElement.selectedIndex = i;
+            break;
+          }
+        }
+        
+        getSearchList(1);
       });
     } else if (result.state === 'denied') {
       console.log('위치 권한 요청 중입니다.');
@@ -125,7 +169,7 @@ function updateLocation(map, radius) {
 
       map.addLayer(vectorLayer);
 
-      
+      console.log(myCoords);
       fetchAddress(myCoords);
      
     }, function (error) {
