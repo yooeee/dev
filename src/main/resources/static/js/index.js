@@ -183,7 +183,12 @@ function getSearchList(page) {
                     let searchItem = clone.querySelector('.search-item');
 
                     // 검색 항목에 데이터 설정
-                    searchItem.querySelector('.restaurant-name').textContent = item.name + '(' + item.distance + ' M)';
+                    if(type1 != 'my'){
+                        searchItem.querySelector('.restaurant-name').textContent = item.name;
+                    } else if(type1== 'my'){
+                        searchItem.querySelector('.restaurant-name').textContent = item.name + '(' + item.distance + ' M)';
+                    }
+                    
                     searchItem.querySelector('.restaurant-address').textContent = item.doro;
 
                     // 클릭 이벤트 추가
@@ -216,23 +221,34 @@ function moveToMapCoordinates(item) {
     view.setZoom(18);
 }
 
-
 function displayMarker(results) {
     if (resultLayer) {
         map.removeLayer(resultLayer);
     }
 
-    const features = results.map(item => {
-        const coordinates3857 = [parseFloat(item.lon), parseFloat(item.lat)]; // EPSG:3857 좌표로 가정
+    const coordinatesMap = new Map();
+
+    results.forEach(item => {
+        const coordinatesKey = `${item.lon},${item.lat}`;
+        if (!coordinatesMap.has(coordinatesKey)) {
+            coordinatesMap.set(coordinatesKey, []);
+        }
+        coordinatesMap.get(coordinatesKey).push(item);
+    });
+
+    const features = [];
+    coordinatesMap.forEach((items, coordinatesKey) => {
+        const [lon, lat] = coordinatesKey.split(',').map(parseFloat);
+        const coordinates3857 = [lon, lat]; // EPSG:3857 좌표로 가정
         const feature = new ol.Feature(new ol.geom.Point(coordinates3857));
-        feature.setProperties(item); // 마커와 관련된 데이터 저장
-        return feature;
+        feature.setProperties({ items }); // 마커와 관련된 데이터 저장
+        features.push(feature);
     });
 
     const vectorSource = new ol.source.Vector({ features: features });
 
     resultLayer = new ol.layer.Vector({
-        name : 'resultLayer',
+        name: 'resultLayer',
         source: vectorSource,
         style: new ol.style.Style({
             image: new ol.style.Icon({
@@ -245,54 +261,49 @@ function displayMarker(results) {
 
     map.addLayer(resultLayer);
 
-    if (document.getElementById('type1') != 'my') {
+    if (document.getElementById('type1').value != 'my') {
         if (document.getElementById('type1').value == 'all') {
             let view = map.getView();
             view.setCenter(ol.proj.fromLonLat([127.5, 36]));  // olCoords는 변경하고자 하는 중심 좌표
             view.setZoom(7);
         } else {
-            // 검색 결과 좌표들에 맞게 지도 뷰 조정
             const extent = vectorSource.getExtent();
             map.getView().fit(extent, {
                 size: map.getSize(),
                 padding: [200, 200, 200, 200]
             });
-            console.log(extent);
-
         }
-
-
     }
 
-    // 각 검색 결과에 대해 오버레이 팝업 추가
-    results.forEach(item => {
-        addPopupToMap(item);
+    coordinatesMap.forEach((items, coordinatesKey) => {
+        const [lon, lat] = coordinatesKey.split(',').map(parseFloat);
+        addPopupToMap(items, [lon, lat]);
     });
 }
 
-function addPopupToMap(item) {
-    // 새로운 팝업 요소 생성
+function addPopupToMap(items, coordinates) {
     let newContainer = document.createElement('div');
     newContainer.className = 'ol-popup';
-    let newContent = document.createElement('div');
-    newContent.innerHTML = `<strong>${item.name}</strong>`;
 
-    newContainer.addEventListener('click', () => {
-        fetchAdditionalInfo(item);
+    let newContent = document.createElement('div');
+    items.forEach(item => {
+        let itemDiv = document.createElement('div');
+        itemDiv.innerHTML = `<strong>${item.name}</strong>`;
+        newContent.appendChild(itemDiv);
+        itemDiv.addEventListener('click', () => {
+            fetchAdditionalInfo(item);
+        });
     });
 
     newContainer.appendChild(newContent);
 
-    // 새로운 팝업 초기화
     let newOverlay = new ol.Overlay({
         element: newContainer,
         autoPan: true,
     });
 
     map.addOverlay(newOverlay);
-
-    // 팝업 위치 설정
-    newOverlay.setPosition([parseFloat(item.lon), parseFloat(item.lat)]);
+    newOverlay.setPosition(coordinates);
 }
 
 function updatePagination(totalCount) {

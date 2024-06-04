@@ -232,7 +232,8 @@ img {
     max-width: none; /* max-width 제한을 해제 */
     font-size: 14px;
     white-space: nowrap; /* 텍스트가 줄 바꿈 되지 않도록 설정 */
-    left: -5px;
+    left: -12px;
+    bottom: 5px;
 }
 
 

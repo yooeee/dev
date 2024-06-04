@@ -202,6 +202,9 @@ class H_Cluster {
         if(this.sdVectorSource != null && this.sggVectorSource != null && document.getElementById('type1').value != 'my'){
             if (zoomLevel < this.sdLev) {
                 this.layer.setSource(this.sdVectorSource);
+                let popUps = document.getElementsByClassName('.ol-popup');
+                
+
                 
             } else if (zoomLevel <= this.sggLev) {
                 this.layer.setSource(this.sggVectorSource);

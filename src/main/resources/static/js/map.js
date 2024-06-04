@@ -136,7 +136,7 @@ function updateLocation(map, radius) {
       const olCoords = ol.proj.fromLonLat(myCoords);
       let view = map.getView();
       view.setCenter(olCoords);  // olCoords는 변경하고자 하는 중심 좌표
-      view.setZoom(14);
+      view.setZoom(18);
 
       if (vectorLayer) {
         map.removeLayer(vectorLayer);
@@ -154,14 +154,14 @@ function updateLocation(map, radius) {
         style: new ol.style.Style({
           image: new ol.style.Circle({
             radius: 10,
-            fill: new ol.style.Fill({ color: "blue" }),
+            fill: new ol.style.Fill({ color: "red" }),
             stroke: new ol.style.Stroke({ color: "white", width: 2 }),
           }),
           fill: new ol.style.Fill({
-            color: "rgba(0, 0, 255, 0.1)",
+            color: "rgba(255, 0, 0, 0.0)",
           }),
           stroke: new ol.style.Stroke({
-            color: "blue",
+            color: "red",
             width: 2,
           }),
         }),
