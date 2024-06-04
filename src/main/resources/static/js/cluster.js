@@ -212,9 +212,9 @@ class H_Cluster {
                 this.layer.setSource(this.sggVectorSource);
             }
         }
-        if(document.getElementById('type1').value == 'my'){
-            this.layer.setSource(this.dataVectorSource);
-        }
+        // if(document.getElementById('type1').value == 'my'){
+        //     this.layer.setSource(this.dataVectorSource);
+        // }
        
     }
 

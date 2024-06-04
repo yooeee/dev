@@ -122,7 +122,7 @@ function getSearchList(page) {
     const keyword = document.getElementById('keyword').value;
     const type1 = document.getElementById('type1').value;
     const type2 = document.getElementById('type2').value;
-    if (keyword.length === 0) {
+    if (keyword.length === 0 && type1 != 'my') {
         alert("검색어를 입력해주세요.");
         return;
     }

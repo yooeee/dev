@@ -117,8 +117,8 @@
 
     <!-- 내 반경 카운트 검색 -->
     <select id="selectListStoreCountByDistance" parameterType="com.store.dev.dto.SearchDTO" resultType="int">
-       SELECT 
-        count(*)
+      SELECT 
+        count(store.*)
     FROM 
         store
     <where>
@@ -141,13 +141,6 @@
             <foreach collection="category" item="cate" separator="," open="(" close=")">
                 #{cate}
             </foreach>
-        </if>
-        <if test="type1 != 'all' and type2 == 'all' ">
-            AND LEFT(store.adm_code, 2) = #{type1} 
-        </if>
-        <if test="type1 != 'all' and type2 != 'all' ">
-            AND LEFT(store.adm_code, 2) = #{type1} 
-            AND LEFT(store.adm_code, 5) = #{type2}
         </if>
     </where>
    
