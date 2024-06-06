@@ -395,7 +395,8 @@ function fetchAdditionalInfo(item) {
         seq : item.seq,
         category : item.category,
         name: item.name,
-        doro: item.doro
+        doro: item.doro,
+        jibeon : item.jibeon
     }
     
     let popupX = document.body.offsetWidth / 2 - 1110 / 2;

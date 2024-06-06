@@ -19,8 +19,12 @@ public class IndexController {
     }
 
     @GetMapping("/info")
-    public ModelAndView getMethodName2(@RequestParam int seq, @RequestParam String category, @RequestParam String name, @RequestParam String doro) {
+    public ModelAndView getMethodName2(@RequestParam int seq, @RequestParam String category, @RequestParam String name, @RequestParam String doro, @RequestParam String jibeon) {
         ModelAndView mvn = new ModelAndView(("popup"));
+        mvn.addObject("seq", seq);
+        mvn.addObject("category", category);
+        mvn.addObject("doro",doro);
+        mvn.addObject("jibeon", jibeon);
         return mvn;
     }
     
