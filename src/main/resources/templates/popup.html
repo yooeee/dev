@@ -34,75 +34,34 @@
 <body>
     <div class="container mt-5">
         <div class="card">
-            <img src="path/to/restaurant-image.jpg" class="card-img-top" alt="식당 사진">
+            <img src="https://place.map.kakao.com/m/1238472498#photoList?type=all&pidx=0" class="card-img-top" alt="식당 사진">
             <div class="card-body">
                 <div class="title-category">
-                    <h5 class="card-title">한식당</h5>
-                    <p class="card-text category">한식</p>
+                    <h5 th:utext="${name}" class="card-title">한식당</h5>
+                    <p th:utext="${category}" class="card-text category"></p>
                 </div>
-                <p class="card-text">도로명주소: 서울특별시 강남구 테헤란로 123</p>
-                <p class="card-text">지번주소: 서울특별시 강남구 역삼동 456-78</p>
-                <p class="card-text">영업상태: <span class="badge bg-success">영업중</span></p>
-                <p class="card-text">시간대: 오전 9시 - 오후 10시</p>
-                <p class="card-text">대표번호: 02-1234-5678</p>
-                <p class="card-text">메뉴: 불고기, 비빔밥, 김치찌개</p>
+                <p th:utext="'도로명 주소 : ' + ${doro}" class="card-text"></p>
+                <p th:utext="'지번 주소 : ' + ${jibeon}" class="card-text"></p>
+                <p id="timeList" class="card-text"></p>
+                <p id="number" class="card-text"></p>
+                <p>(음식 메뉴)</p>
+                <p id="menuList" class="card-text"></p>
             </div>
-                <h6>리뷰 :</h6>
-                <div class="review-container">
-                    <div>
-                        <p>평점: 3.5/5</p>
-                        <p>정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                            서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.
-                            정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                            서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.</p>
-                    </div>
-                    <div>
-                        <p>평점: 3.5/5</p>
-                        <p>정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                            서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.
-                            정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                            서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.</p>
-                    </div>
-                    <div>
-                        <p>평점: 3.5/5</p>
-                        <p>정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                            서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.
-                            정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                            서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.</p>
-                    </div>
-                    <div>
-                        <p>평점: 3.5/5</p>
-                        <p>정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                            서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.
-                            정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                            서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.</p>
-                    </div>
-                    <button class="btn btn-primary" onclick="">더보기</button>
-
+                <h6>(리뷰)</h6>
+                <div id="reviewList" class="review-container">
                 </div>
-                <h6>블로그 후기:</h6>
-                <div class="blog-review-container">
-                    
-                    <p>정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                        서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.
-                        정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                        서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.</p>
-                    <p>정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                        서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.
-                        정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                        서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.</p>
-                    <p>정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                        서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.
-                        정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                        서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.</p>
-                    <p>정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                        서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.
-                        정말 맛있어요! 여기는 또 오고 싶네요.가격도 합리적이고 분위기가 좋습니다.
-                        서비스는 조금 느리지만 음식은 최고예요. 친구들과 함께 방문했는데 모두 만족했습니다.</p>
+                <h6>(블로그 후기)</h6>
+                <div id="blogList" class="blog-review-container">
                         <button class="btn btn-primary" onclick="loadMoreBlogReviews()">더보기</button>
                 </div>
         </div>
     </div>
 </body>
+
+<template id="reviewTpl">
+    <div>
+        <p ></p>
+    </div>
+</template>
 
 </html>

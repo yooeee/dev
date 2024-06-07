@@ -25,6 +25,7 @@ public class IndexController {
         mvn.addObject("category", category);
         mvn.addObject("doro",doro);
         mvn.addObject("jibeon", jibeon);
+        mvn.addObject("name", name);
         return mvn;
     }
     
