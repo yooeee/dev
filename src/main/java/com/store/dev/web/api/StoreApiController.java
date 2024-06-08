@@ -90,7 +90,6 @@ public class StoreApiController {
                 WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
         
                 // 카카오맵에서 검색하기
-                System.out.println("새로운시작 카카오맵에서 검색하기");
                 driver.get("https://m.map.kakao.com/actions/searchView?q=" + name + " " + doroFirstThreeWords);
 
                 try {
@@ -101,7 +100,6 @@ public class StoreApiController {
                         return res;
                     }
                 } catch (TimeoutException e) {
-                    System.out.println("검색 결과가 있습니다.");
                 }
 
 
@@ -113,14 +111,12 @@ public class StoreApiController {
         
                 // 현재 URL을 가져와 출력합니다.
                 String currentUrl = driver.getCurrentUrl();
-                System.out.println("현재 URL: " + currentUrl);
         
                 // 블로그 후기 가져오기
                 List<WebElement> blogReviewElements = new ArrayList<>();
                 try {
                     blogReviewElements = driver.findElements(By.cssSelector(".list_review li"));
                 } catch (NoSuchElementException | TimeoutException e) {
-                    System.out.println("블로그 후기 요소를 찾을 수 없음");
                 }
                 List<Map<String, String>> blogReviewList = new ArrayList<>();
         
@@ -140,70 +136,57 @@ public class StoreApiController {
                         }
                         reviewData.put("photos", String.join(",", photos));
                     } catch (NoSuchElementException e) {
-                        System.out.println("블로그 후기의 세부 요소를 찾을 수 없음");
                     }
                     blogReviewList.add(reviewData);
                 }
         
                 // 카카오사진
-                System.out.println("카카오사진======");
+
                 List<WebElement> listPhotoElements = new ArrayList<>();
                 try {
                     wait.until(ExpectedConditions.presenceOfElementLocated(By.className("link_photo"))); // 요소가 로드될 때까지 대기
                     listPhotoElements = driver.findElements(By.className("link_photo"));
                 } catch (NoSuchElementException | TimeoutException e) {
-                    System.out.println("카카오 사진 요소를 찾을 수 없음");
                 }
                 List<String> photoHrefList = new ArrayList<>();
                 for (WebElement listPhotoElement : listPhotoElements) {
                     String href = listPhotoElement.getAttribute("href");
                     photoHrefList.add(href);
-                    System.out.println(href);
                 }
-                System.out.println("카카오사진======");
         
                 // 전화번호
-                System.out.println("전화번호=====");
                 List<WebElement> numberElements = new ArrayList<>();
                 try {
                     numberElements = driver.findElements(By.className("num_contact"));
                 } catch (NoSuchElementException | TimeoutException e) {
-                    System.out.println("전화번호 요소를 찾을 수 없음");
                 }
                 String numberList = null;
                 for (WebElement element : numberElements) {
                     numberList = element.getText();
                 }
-                System.out.println("전화번호=======");
         
                 // 영업시간
-        System.out.println("영업시간=======");
         String timeList = null;
         try {
             WebElement timeElement = driver.findElements(By.className("txt_operation")).get(0);
             timeList = timeElement.getText();
         } catch (NoSuchElementException | IndexOutOfBoundsException e) {
-            System.out.println("영업시간 요소를 찾을 수 없음");
         }
-        System.out.println("영업시간=======");
         
-                Thread.sleep(2000); // 추가 대기 시간을 넣어 안정성을 높임
+                Thread.sleep(1000); // 추가 대기 시간을 넣어 안정성을 높임
         
                 // 음식메뉴 이동
-                System.out.println("음식메뉴======");
                 driver.get(currentUrl + "#menuInfo");
                 try {
                     wait.until(ExpectedConditions.presenceOfElementLocated(By.className("info_menu"))); // 요소가 로드될 때까지 대기
-                    Thread.sleep(2000); // 페이지가 완전히 로드될 때까지 추가 대기
+                    Thread.sleep(1000); // 페이지가 완전히 로드될 때까지 추가 대기
                 } catch (NoSuchElementException | TimeoutException e) {
-                    System.out.println("음식 메뉴 요소를 찾을 수 없음");
                 }
                 // 음식 메뉴 가져오기
                 List<WebElement> menuElements = new ArrayList<>();
                 try {
                     menuElements = driver.findElements(By.cssSelector(".list_menu .info_menu"));
                 } catch (NoSuchElementException | TimeoutException e) {
-                    System.out.println("음식 메뉴의 세부 요소를 찾을 수 없음");
                 }
                 List<Map<String, String>> menuList = new ArrayList<>();
                 for (WebElement element : menuElements) {
@@ -212,27 +195,22 @@ public class StoreApiController {
                         menuData.put("name", element.findElement(By.className("name_menu")).getText());
                         menuData.put("price", element.findElement(By.className("price_menu")).getText().trim());
                     } catch (NoSuchElementException e) {
-                        System.out.println("음식 메뉴의 이름 또는 가격 요소를 찾을 수 없음");
                     }
                     menuList.add(menuData);
                 }
-                System.out.println("음식메뉴======");
         
                 // 카카오리뷰 이동
-                System.out.println("카카오리뷰======");
                 driver.get(currentUrl + "#comment"); // 리뷰를 가져올 새로운 URL
                 try {
                     wait.until(ExpectedConditions.presenceOfElementLocated(By.className("txt_comment"))); // 요소가 로드될 때까지 대기
                 } catch (NoSuchElementException | TimeoutException e) {
-                    System.out.println("리뷰 요소를 찾을 수 없음");
                 }
-                Thread.sleep(2000); // 페이지가 완전히 로드될 때까지 추가 대기
+                Thread.sleep(1000); // 페이지가 완전히 로드될 때까지 추가 대기
         
                 List<WebElement> kakaoReviewElements = new ArrayList<>();
                 try {
                     kakaoReviewElements = driver.findElements(By.className("inner_grade")); // 각 리뷰 요소를 찾음
                 } catch (NoSuchElementException e) {
-                    System.out.println("카카오 리뷰 요소를 찾을 수 없음");
                 }
         
                 List<Map<String, String>> kakaoReviewList = new ArrayList<>();
@@ -243,27 +221,18 @@ public class StoreApiController {
                         reviewData.put("review", kakaoReviewElement.findElement(By.className("txt_comment")).getText());
                         reviewData.put("date", kakaoReviewElement.findElement(By.className("time_write")).getText());
                         kakaoReviewList.add(reviewData);
-                        System.out.println("username: " + reviewData.get("username"));
-                        System.out.println("review: " + reviewData.get("review"));
-                        System.out.println("date: " + reviewData.get("date"));
                     } catch (NoSuchElementException e) {
-                        System.out.println("리뷰의 세부 요소를 찾을 수 없음");
                     }
                 }
 
                 // 카카오 전체 평점 가져오기
-                System.out.println("카카오 전체 평점======");
                 String overallRating = null;
                 try {
                     WebElement overallRatingElement = driver.findElement(By.cssSelector(".grade_star.size_m .num_rate"));
                     overallRating = overallRatingElement.getText();
-                    System.out.println("Overall Rating: " + overallRating);
                 } catch (NoSuchElementException e) {
-                    System.out.println("전체 평점 요소를 찾을 수 없음");
                 }
-                System.out.println("카카오 전체 평점======");
         
-                System.out.println("카카오리뷰======");
         
                 // 결과를 맵에 저장
                 Map<String, Object> result = new HashMap<>();

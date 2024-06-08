@@ -46,7 +46,8 @@ body {
 }
 
 .review-container,
-.blog-review-container {
+.blog-review-container,
+.menu-container {
     max-height: 600px;
     overflow-y: auto;
     background-color: #fafafa;
@@ -54,10 +55,12 @@ body {
     border-radius: 10px;
     margin-bottom: 30px;
     border: 1px solid #ddd;
+    list-style-type: none;
 }
 
 .review-item,
-.blog-review-item {
+.blog-review-item,
+.menu-item {
     border-bottom: 1px solid #eee;
     padding-bottom: 20px;
     margin-bottom: 20px;
@@ -69,12 +72,14 @@ body {
 }
 
 .review-item:last-child,
-.blog-review-item:last-child {
+.blog-review-item:last-child,
+.menu-item:last-child {
     border-bottom: none;
 }
 
 .review-item::before,
-.blog-review-item::before {
+.blog-review-item::before,
+.menu-item::before {
     content: none;
 }
 
@@ -178,7 +183,7 @@ h6 {
     margin-bottom: 10px;
 }
 
-.info_menu {
+.menu_info {
     display: flex;
     justify-content: space-between;
 }

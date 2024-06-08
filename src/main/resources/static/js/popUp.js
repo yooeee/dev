@@ -8,7 +8,7 @@ function showLoadingBar() {
     loadingOverlay.style.left = '0';
     loadingOverlay.style.width = '100%';
     loadingOverlay.style.height = '100%';
-    loadingOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    loadingOverlay.style.backgroundColor = 'rgba(255, 255, 255, 1)';
     loadingOverlay.style.zIndex = '9999';
     loadingOverlay.innerHTML = '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><img src="/img/loading.gif" alt="Loading..."></div>';
     document.body.appendChild(loadingOverlay);
@@ -58,7 +58,7 @@ function initInfoIndex() {
             let kakaoReviewList = result.result.kakaoReviewList || [];
             let menuList = result.result.menuList || [];
             let photoHrefList = result.result.photoHrefList || [];
-            let numberList = result.result.numberList || [];
+            let numberList = result.result.numberList || '조회된 결과가 없습니다.';
             let timeList = result.result.timeList || '조회된 결과가 없습니다.';
             let overallRating = result.result.overallRating || '조회된 평점이 없습니다.';
 
@@ -100,7 +100,7 @@ function initInfoIndex() {
                 });
             }
 
-            document.getElementById('number').innerHTML = '전화번호 : ' + (numberList || '조회된 결과가 없습니다.');
+            document.getElementById('number').innerHTML = (numberList || '조회된 결과가 없습니다.');
             // 메뉴 리스트 처리
             const menuListContainer = document.getElementById('menuList');
             menuListContainer.innerHTML = '';
@@ -110,26 +110,27 @@ function initInfoIndex() {
             } else {
                 menuList.forEach(item => {
                     const menuItem = document.createElement('li');
+                    menuItem.classList.add('menu-item');
 
-                    const infoMenu = document.createElement('div');
-                    infoMenu.classList.add('info_menu');
+                    const menuInfo = document.createElement('div');
+                    menuInfo.classList.add('menu_info');
 
                     const menuName = document.createElement('span');
                     menuName.classList.add('name_menu');
                     menuName.textContent = item.name;
 
-                    const menuPrice = document.createElement('em');
+                    const menuPrice = document.createElement('span');
                     menuPrice.classList.add('price_menu');
                     menuPrice.textContent = item.price;
 
-                    infoMenu.appendChild(menuName);
-                    infoMenu.appendChild(menuPrice);
-                    menuItem.appendChild(infoMenu);
+                    menuInfo.appendChild(menuName);
+                    menuInfo.appendChild(menuPrice);
+                    menuItem.appendChild(menuInfo);
                     menuListContainer.appendChild(menuItem);
                 });
             }
 
-            document.getElementById('timeList').innerHTML = '영업시간 : ' + (timeList ? timeList : '조회된 결과가 없습니다.');
+            document.getElementById('timeList').innerHTML = (timeList ? timeList : '조회된 결과가 없습니다.');
 
             document.getElementById('overallRating').innerHTML = overallRating;
 
