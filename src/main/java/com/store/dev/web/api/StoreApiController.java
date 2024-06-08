@@ -174,6 +174,29 @@ wait.until(ExpectedConditions.presenceOfElementLocated(By.className("cont_grade"
 String currentUrl = driver.getCurrentUrl();
 System.out.println("현재 URL: " + currentUrl);
 
+// 블로그 후기 가져오기
+List<WebElement> blogReviewElements = driver.findElements(By.cssSelector(".list_review li"));
+List<Map<String, String>> blogReviewList = new ArrayList<>();
+
+for (WebElement blogReviewElement : blogReviewElements) {
+    Map<String, String> reviewData = new HashMap<>();
+    reviewData.put("title", blogReviewElement.findElement(By.cssSelector(".tit_review")).getText());
+    reviewData.put("content", blogReviewElement.findElement(By.cssSelector(".txt_review")).getText());
+    reviewData.put("author", blogReviewElement.findElement(By.cssSelector(".loss_word")).getText());
+    reviewData.put("date", blogReviewElement.findElement(By.cssSelector(".review_date")).getText());
+    reviewData.put("link", blogReviewElement.findElement(By.cssSelector("a.link_review")).getAttribute("href"));
+
+    List<WebElement> photoElements = blogReviewElement.findElements(By.cssSelector(".photo_slider .item_photo img"));
+    List<String> photos = new ArrayList<>();
+    for (WebElement photoElement : photoElements) {
+        photos.add(photoElement.getAttribute("src"));
+    }
+    reviewData.put("photos", String.join(",", photos));
+
+    blogReviewList.add(reviewData);
+}
+
+
 // 카카오사진
 System.out.println("카카오사진======");
 wait.until(ExpectedConditions.presenceOfElementLocated(By.className("link_photo"))); // 요소가 로드될 때까지 대기
@@ -254,6 +277,10 @@ if (numberList != null) {
 }
 if (timeList != null) {
     result.put("timeList", timeList);
+}
+
+if (!blogReviewList.isEmpty()) {
+     result.put("blogReviewList", blogReviewList);
 }
 
 res.setStatus("success");
