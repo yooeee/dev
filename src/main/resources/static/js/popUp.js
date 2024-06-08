@@ -54,7 +54,8 @@ function initInfoIndex() {
             let menuList = result.result.menuList || [];
             let photoHrefList = result.result.photoHrefList || [];
             let numberList = result.result.numberList || [];
-            let timeList = result.result.timeList || [];
+            let timeList = result.result.timeList || '조회된 결과가 없습니다.';
+            let overallRating = result.result.overallRating || '조회된 평점이 없습니다.';
 
             const reviewListContainer = document.getElementById('reviewList');
             reviewListContainer.innerHTML = '';
@@ -84,23 +85,17 @@ function initInfoIndex() {
                     reviewDate.classList.add('time_write');
                     reviewDate.textContent = review.date;
 
-                    const reviewRating = document.createElement('span');
-                    reviewRating.classList.add('inner_star');
-                    reviewRating.setAttribute('style', review.rating);
-
                     innerGrade.appendChild(infoUser);
                     infoUser.appendChild(userName);
                     innerGrade.appendChild(userReview);
                     innerGrade.appendChild(reviewDate);
-                    innerGrade.appendChild(reviewRating);
 
                     reviewItem.appendChild(innerGrade);
                     reviewListContainer.appendChild(reviewItem);
                 });
             }
 
-            document.getElementById('number').innerHTML = '전화번호 : ' + (numberList.length > 0 ? numberList : '조회된 결과가 없습니다.');
-
+            document.getElementById('number').innerHTML = '전화번호 : ' + (numberList || '조회된 결과가 없습니다.');
             // 메뉴 리스트 처리
             const menuListContainer = document.getElementById('menuList');
             menuListContainer.innerHTML = '';
@@ -131,6 +126,7 @@ function initInfoIndex() {
 
             document.getElementById('timeList').innerHTML = '영업시간 : ' + (timeList ? timeList : '조회된 결과가 없습니다.');
 
+            document.getElementById('overallRating').innerHTML = overallRating;
 
             let blogReviewList = result.result.blogReviewList || [];
 

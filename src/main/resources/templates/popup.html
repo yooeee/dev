@@ -26,18 +26,19 @@
                 <div class="title-category d-flex align-items-center">
                     <h5 th:utext="${name}" class="card-title me-3">한식당</h5>
                     <span th:utext="${category}" class="badge bg-primary"></span>
+                    <p id="overallRating" class="overallRating card-text"></p>
                 </div>
                 <p th:utext="'도로명 주소 : ' + ${doro}" class="card-text mt-3"></p>
                 <p th:utext="'지번 주소 : ' + ${jibeon}" class="card-text"></p>
                 <p id="timeList" class="card-text"></p>
                 <p id="number" class="card-text"></p>
+                
                 <p>(음식 메뉴)</p>
                 <ul id="menuList" class="list_menu"></ul>
                 <h6 class="mt-4">리뷰</h6>
                 <ul id="reviewList" class="review-container"></ul>
                 <h6 class="mt-4">블로그 후기</h6>
                 <div id="blogList" class="blog-review-container"></div>
-                <button class="btn btn-primary mt-3" onclick="loadMoreBlogReviews()">더보기</button>
             </div>
         </div>
     </div>

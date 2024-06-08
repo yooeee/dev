@@ -164,19 +164,15 @@ public class StoreApiController {
                 System.out.println("전화번호=======");
         
                 // 영업시간
-                System.out.println("영업시간=======");
-                List<WebElement> timeElements = new ArrayList<>();
-                try {
-                    timeElements = driver.findElements(By.className("realtime_wrap"));
-                } catch (NoSuchElementException | TimeoutException e) {
-                    System.out.println("영업시간 요소를 찾을 수 없음");
-                }
-                String timeList = null;
-                for (WebElement element : timeElements) {
-                    System.out.println(element.getText());
-                    timeList = element.getText();
-                }
-                System.out.println("영업시간=======");
+        System.out.println("영업시간=======");
+        String timeList = null;
+        try {
+            WebElement timeElement = driver.findElements(By.className("txt_operation")).get(0);
+            timeList = timeElement.getText();
+        } catch (NoSuchElementException | IndexOutOfBoundsException e) {
+            System.out.println("영업시간 요소를 찾을 수 없음");
+        }
+        System.out.println("영업시간=======");
         
                 Thread.sleep(2000); // 추가 대기 시간을 넣어 안정성을 높임
         
@@ -233,16 +229,27 @@ public class StoreApiController {
                         reviewData.put("username", kakaoReviewElement.findElement(By.className("name_user")).getText());
                         reviewData.put("review", kakaoReviewElement.findElement(By.className("txt_comment")).getText());
                         reviewData.put("date", kakaoReviewElement.findElement(By.className("time_write")).getText());
-                        reviewData.put("rating", kakaoReviewElement.findElement(By.cssSelector(".inner_star")).getAttribute("style"));
                         kakaoReviewList.add(reviewData);
                         System.out.println("username: " + reviewData.get("username"));
                         System.out.println("review: " + reviewData.get("review"));
                         System.out.println("date: " + reviewData.get("date"));
-                        System.out.println("rating: " + reviewData.get("rating"));
                     } catch (NoSuchElementException e) {
                         System.out.println("리뷰의 세부 요소를 찾을 수 없음");
                     }
                 }
+
+                // 카카오 전체 평점 가져오기
+                System.out.println("카카오 전체 평점======");
+                String overallRating = null;
+                try {
+                    WebElement overallRatingElement = driver.findElement(By.cssSelector(".grade_star.size_m .num_rate"));
+                    overallRating = overallRatingElement.getText();
+                    System.out.println("Overall Rating: " + overallRating);
+                } catch (NoSuchElementException e) {
+                    System.out.println("전체 평점 요소를 찾을 수 없음");
+                }
+                System.out.println("카카오 전체 평점======");
+        
                 System.out.println("카카오리뷰======");
         
                 // 결과를 맵에 저장
@@ -261,6 +268,9 @@ public class StoreApiController {
                 }
                 if (timeList != null) {
                     result.put("timeList", timeList);
+                }
+                if (overallRating != null) {
+                    result.put("overallRating", overallRating);
                 }
         
                 if (!blogReviewList.isEmpty()) {

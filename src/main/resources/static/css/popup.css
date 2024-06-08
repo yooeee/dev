@@ -57,6 +57,10 @@ body {
     border-bottom: 1px solid #eee;
     padding-bottom: 20px;
     margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
 }
 
 .review-item:last-child,
@@ -86,6 +90,7 @@ h6 {
     margin: 5px;
     border-radius: 5px;
     object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {
@@ -118,8 +123,6 @@ h6 {
     font-size: 18px;
 }
 
-
-/* popup.css */
 .review-item {
     margin-bottom: 20px;
     padding: 10px;
@@ -144,6 +147,10 @@ h6 {
 
 .txt_comment {
     margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .time_write {
@@ -179,3 +186,30 @@ h6 {
 .price_menu {
     color: #888;
 }
+
+
+.tit_review{
+    font-size: 24px;
+}
+.loss_word{
+    font-size: 12px;
+    font-weight: bold;
+}
+.review_date{
+    margin-left: 1%;
+    font-size: 12px;
+}
+.link_review{
+    margin-left: 1%;
+}
+.txt_review{
+    font-size: 15px;
+}
+
+.overallRating{
+    margin-left: 1%;
+    font-size: 15px;
+    font-weight: bold;
+    color: black
+}
+;
