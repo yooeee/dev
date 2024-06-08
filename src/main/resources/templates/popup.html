@@ -28,12 +28,12 @@
                     <span th:utext="${category}" class="badge bg-primary"></span>
                     <p id="overallRating" class="overallRating card-text"></p>
                 </div>
-                <p th:utext="'도로명 주소 : ' + ${doro}" class="card-text mt-3"></p>
-                <p th:utext="'지번 주소 : ' + ${jibeon}" class="card-text"></p>
-                <p id="timeList" class="card-text"></p>
-                <p id="number" class="card-text"></p>
+                <p class="card-text mt-3"><span class="bold-text">도로명 주소 :</span> <span th:utext="${doro}"></span></p>
+                <p class="card-text"><span class="bold-text">지번 주소 :</span> <span th:utext="${jibeon}"></span></p>
+                <p class="card-text"><span class="bold-text">영업시간 :</span> <span id="timeList"></span></p>
+                <p class="card-text"><span class="bold-text">전화번호 :</span> <span id="number"></span></p>
                 
-                <p>(음식 메뉴)</p>
+                <p style="font-weight: bold;">메뉴</p>
                 <ul id="menuList" class="list_menu"></ul>
                 <h6 class="mt-4">리뷰</h6>
                 <ul id="reviewList" class="review-container"></ul>

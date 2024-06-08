@@ -49,6 +49,11 @@ function initInfoIndex() {
     })
     .then(result => {
         hideLoadingBar();
+        if (result.status === 'noResult') {
+            alert("해당 가게는 상세정보를 지원하지 않습니다.");
+            window.close();  // 브라우저 창 닫기
+            return;  // 나머지 코드 실행 중지
+        }
         if (result.status == 'success') {
             let kakaoReviewList = result.result.kakaoReviewList || [];
             let menuList = result.result.menuList || [];

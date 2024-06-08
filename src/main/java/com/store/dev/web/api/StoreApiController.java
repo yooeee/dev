@@ -83,15 +83,28 @@ public class StoreApiController {
                 WebDriver driver = new ChromeDriver();
                 JavascriptExecutor js = (JavascriptExecutor) driver;
         
-                // doro와 jibeon 각각에서 첫 두 단어를 추출
+                  // doro와 jibeon 각각에서 첫 세 단어를 추출
                 String[] doroParts = doro.split(" ");
-                String doroFirstTwoWords = doroParts.length > 1 ? doroParts[0] + " " + doroParts[1] : doro;
-        
-                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+                String doroFirstThreeWords = doroParts.length > 2 ? doroParts[0] + " " + doroParts[1] + " " + doroParts[2] : doro;
+
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
         
                 // 카카오맵에서 검색하기
                 System.out.println("새로운시작 카카오맵에서 검색하기");
-                driver.get("https://m.map.kakao.com/actions/searchView?q=" + name + " " + doroFirstTwoWords);
+                driver.get("https://m.map.kakao.com/actions/searchView?q=" + name + " " + doroFirstThreeWords);
+
+                try {
+                    WebElement searchNoneElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".search_none")));
+                    if (searchNoneElement != null) {
+                        res.setStatus("noResult");
+                        driver.quit();
+                        return res;
+                    }
+                } catch (TimeoutException e) {
+                    System.out.println("검색 결과가 있습니다.");
+                }
+
+
                 WebElement firstResult = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".list_result li")));
                 firstResult.click();
         

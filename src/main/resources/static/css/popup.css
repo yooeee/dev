@@ -41,6 +41,10 @@ body {
     color: #555;
 }
 
+.bold-text {
+    font-weight: bold;
+}
+
 .review-container,
 .blog-review-container {
     max-height: 600px;
@@ -61,11 +65,17 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 15px;
+    list-style-type: none;
 }
 
 .review-item:last-child,
 .blog-review-item:last-child {
     border-bottom: none;
+}
+
+.review-item::before,
+.blog-review-item::before {
+    content: none;
 }
 
 h6 {
@@ -121,12 +131,6 @@ h6 {
 .category {
     font-weight: bold;
     font-size: 18px;
-}
-
-.review-item {
-    margin-bottom: 20px;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
 }
 
 .inner_grade {
@@ -187,29 +191,31 @@ h6 {
     color: #888;
 }
 
-
-.tit_review{
+.tit_review {
     font-size: 24px;
 }
-.loss_word{
+
+.loss_word {
     font-size: 12px;
     font-weight: bold;
 }
-.review_date{
+
+.review_date {
     margin-left: 1%;
     font-size: 12px;
 }
-.link_review{
+
+.link_review {
     margin-left: 1%;
 }
-.txt_review{
+
+.txt_review {
     font-size: 15px;
 }
 
-.overallRating{
+.overallRating {
     margin-left: 1%;
     font-size: 15px;
     font-weight: bold;
-    color: black
+    color: black;
 }
-;
