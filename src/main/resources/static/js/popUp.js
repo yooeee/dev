@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
     setInitEvent();
 });
 
-
 function initInfoIndex() {
     showLoadingBar();
 
@@ -41,63 +40,106 @@ function initInfoIndex() {
     fetch('/api/store/info?' + new URLSearchParams(data).toString(), {
         method: 'GET',
     })
-        .then(response => {
-            if (!response.ok) {
-                alert("크롤링 실패");
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(result => {
-            hideLoadingBar();
-            if (result.status == 'success') {
+    .then(response => {
+        if (!response.ok) {
+            alert("크롤링 실패");
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(result => {
+        hideLoadingBar();
+        if (result.status == 'success') {
+            let kakaoReviewList = result.result.kakaoReviewList || [];
+            let menuList = result.result.menuList || [];
+            let photoHrefList = result.result.photoHrefList || [];
+            let numberList = result.result.numberList || [];
+            let timeList = result.result.timeList || [];
 
-                let kakaoReviewList = result.result.kakaoReviewList;
-                let menuList = result.result.menuList;
-                let photoHrefList = result.result.photoHrefList;
-                let numberList = result.result.numberList;
-                let timeList = result.result.timeList;
+            const reviewListContainer = document.getElementById('reviewList');
+            reviewListContainer.innerHTML = '';
 
-                // reviewTpl 템플릿을 가져옵니다.
-                const reviewTpl = document.getElementById('reviewTpl');
-                // reviewList 컨테이너를 가져옵니다.
-                const reviewListContainer = document.getElementById('reviewList');
-
-                // kakaoReviewList의 각 항목에 대해 반복합니다.
+            if (kakaoReviewList.length === 0) {
+                reviewListContainer.innerHTML = '<li>조회된 결과가 없습니다.</li>';
+            } else {
                 kakaoReviewList.forEach(review => {
-                    // 템플릿의 내용을 복제합니다.
-                    const clone = document.importNode(reviewTpl.content, true);
-                    // 복제된 템플릿 내부의 p 요소를 찾습니다.
-                    const pElement = clone.querySelector('p');
-                    // p 요소에 리뷰 내용을 추가합니다.
-                    pElement.textContent = review;
-                    // review-item 클래스를 추가합니다.
-                    const reviewItem = document.createElement('div');
+                    const reviewItem = document.createElement('li');
                     reviewItem.classList.add('review-item');
-                    reviewItem.appendChild(clone);
-                    // reviewList 컨테이너에 review-item을 추가합니다.
+
+                    const innerGrade = document.createElement('div');
+                    innerGrade.classList.add('inner_grade');
+
+                    const infoUser = document.createElement('div');
+                    infoUser.classList.add('info_user');
+
+                    const userName = document.createElement('span');
+                    userName.classList.add('name_user');
+                    userName.textContent = review.username;
+
+                    const userReview = document.createElement('p');
+                    userReview.classList.add('txt_comment');
+                    userReview.textContent = review.review;
+
+                    const reviewDate = document.createElement('span');
+                    reviewDate.classList.add('time_write');
+                    reviewDate.textContent = review.date;
+
+                    const reviewRating = document.createElement('span');
+                    reviewRating.classList.add('inner_star');
+                    reviewRating.setAttribute('style', review.rating);
+
+                    innerGrade.appendChild(infoUser);
+                    infoUser.appendChild(userName);
+                    innerGrade.appendChild(userReview);
+                    innerGrade.appendChild(reviewDate);
+                    innerGrade.appendChild(reviewRating);
+
+                    reviewItem.appendChild(innerGrade);
                     reviewListContainer.appendChild(reviewItem);
                 });
+            }
 
-                document.getElementById('number').innerHTML = '전화번호 : ' + numberList;
+            document.getElementById('number').innerHTML = '전화번호 : ' + (numberList.length > 0 ? numberList : '조회된 결과가 없습니다.');
 
-                const menuListContainer = document.getElementById('menuList');
-                menuListContainer.innerHTML = ''; // 기존 내용을 지움
+            // 메뉴 리스트 처리
+            const menuListContainer = document.getElementById('menuList');
+            menuListContainer.innerHTML = '';
 
+            if (menuList.length === 0) {
+                menuListContainer.innerHTML = '<li>조회된 결과가 없습니다.</li>';
+            } else {
                 menuList.forEach(item => {
-                    const p = document.createElement('p');
-                    p.innerHTML = item.replace(/\n/g, '<br>');
-                    menuListContainer.appendChild(p);
+                    const menuItem = document.createElement('li');
+
+                    const infoMenu = document.createElement('div');
+                    infoMenu.classList.add('info_menu');
+
+                    const menuName = document.createElement('span');
+                    menuName.classList.add('name_menu');
+                    menuName.textContent = item.name;
+
+                    const menuPrice = document.createElement('em');
+                    menuPrice.classList.add('price_menu');
+                    menuPrice.textContent = item.price;
+
+                    infoMenu.appendChild(menuName);
+                    infoMenu.appendChild(menuPrice);
+                    menuItem.appendChild(infoMenu);
+                    menuListContainer.appendChild(menuItem);
                 });
+            }
 
-                timeList = timeList.split('\n').filter(item => item.trim() !== '수정 시간' && item.trim() !== '이동하기' && item.trim() !== '수정 제안').join(' ');
-                document.getElementById('timeList').innerHTML = '영업시간 : ' + timeList;
+            document.getElementById('timeList').innerHTML = '영업시간 : ' + (timeList ? timeList : '조회된 결과가 없습니다.');
 
-                let blogReviewList = result.result.blogReviewList;
 
-                const blogListContainer = document.getElementById('blogList');
-                blogListContainer.innerHTML = '';
+            let blogReviewList = result.result.blogReviewList || [];
 
+            const blogListContainer = document.getElementById('blogList');
+            blogListContainer.innerHTML = '';
+
+            if (blogReviewList.length === 0) {
+                blogListContainer.innerHTML = '<div>조회된 결과가 없습니다.</div>';
+            } else {
                 blogReviewList.forEach(review => {
                     const reviewElement = document.createElement('div');
                     reviewElement.classList.add('blog-review-item');
@@ -141,15 +183,14 @@ function initInfoIndex() {
 
                     blogListContainer.appendChild(reviewElement);
                 });
-
-            } else {
-                console.log("fail search");
             }
-        })
-        .catch(error => console.error('There was a problem with your fetch operation:', error));
 
+        } else {
+            console.log("fail search");
+        }
+    })
+    .catch(error => console.error('There was a problem with your fetch operation:', error));
 }
-
 
 function setInitEvent() {
     // 여기에 초기화 이벤트를 추가하십시오.
