@@ -57,10 +57,31 @@ function initInfoIndex() {
         if (result.status == 'success') {
             let kakaoReviewList = result.result.kakaoReviewList || [];
             let menuList = result.result.menuList || [];
-            let photoHrefList = result.result.photoHrefList || [];
+            let photoSrcList = result.result.photoSrcList || [];
             let numberList = result.result.numberList || '조회된 결과가 없습니다.';
             let timeList = result.result.timeList || '조회된 결과가 없습니다.';
             let overallRating = result.result.overallRating || '조회된 평점이 없습니다.';
+            let blogReviewList = result.result.blogReviewList || [];
+
+            const carouselContainer = document.getElementById('carouselContainer');
+            if (photoSrcList && photoSrcList.length > 0) {
+                photoSrcList.forEach(src => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = src;
+                    imgElement.alt = '식당 사진';
+                    imgElement.onerror = () => imgElement.src = '/img/no_image.png';  // 이미지 로드 실패 시 대체 이미지 표시
+                    carouselContainer.appendChild(imgElement);
+                });
+            } else {
+                const imgElement = document.createElement('img');
+                imgElement.src = '/img/no_image.png';
+                imgElement.alt = '이미지가 없습니다';
+                imgElement.style.display = 'block';
+                imgElement.style.margin = '0 auto';
+                imgElement.style.width = '150px';
+                imgElement.style.height = '150px';
+                carouselContainer.appendChild(imgElement);
+            }
 
             const reviewListContainer = document.getElementById('reviewList');
             reviewListContainer.innerHTML = '';
@@ -134,8 +155,6 @@ function initInfoIndex() {
 
             document.getElementById('overallRating').innerHTML = overallRating;
 
-            let blogReviewList = result.result.blogReviewList || [];
-
             const blogListContainer = document.getElementById('blogList');
             blogListContainer.innerHTML = '';
 
@@ -179,6 +198,7 @@ function initInfoIndex() {
                         const imgElement = document.createElement('img');
                         imgElement.src = photoUrl;
                         imgElement.classList.add('img_thumb');
+                        imgElement.onerror = () => imgElement.src = '/img/no_image.png';  // 이미지 로드 실패 시 대체 이미지 표시
                         photoContainer.appendChild(imgElement);
                     });
                     reviewElement.appendChild(photoContainer);

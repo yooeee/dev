@@ -111,6 +111,22 @@ public class StoreApiController {
         
                 // 현재 URL을 가져와 출력합니다.
                 String currentUrl = driver.getCurrentUrl();
+
+
+                  // 카카오 사진 가져오기
+                List<WebElement> photoElements = new ArrayList<>();
+                try {
+                    wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".list_photo li a img"))); // 요소가 로드될 때까지 대기
+                    photoElements = driver.findElements(By.cssSelector(".list_photo li a img"));
+                } catch (NoSuchElementException | TimeoutException e) {
+                }
+                List<String> photoSrcList = new ArrayList<>();
+                for (WebElement element : photoElements) {
+                    String src = element.getAttribute("src");
+                    if (!src.contains("thumb_s_alpha0.png")) { // 유효한 이미지 필터링
+                        photoSrcList.add(src);
+                    }
+                }
         
                 // 블로그 후기 가져오기
                 List<WebElement> blogReviewElements = new ArrayList<>();
@@ -129,9 +145,9 @@ public class StoreApiController {
                         reviewData.put("date", blogReviewElement.findElement(By.cssSelector(".review_date")).getText());
                         reviewData.put("link", blogReviewElement.findElement(By.cssSelector("a.link_review")).getAttribute("href"));
         
-                        List<WebElement> photoElements = blogReviewElement.findElements(By.cssSelector(".photo_slider .item_photo img"));
+                        List<WebElement> photoReviewElements = blogReviewElement.findElements(By.cssSelector(".photo_slider .item_photo img"));
                         List<String> photos = new ArrayList<>();
-                        for (WebElement photoElement : photoElements) {
+                        for (WebElement photoElement : photoReviewElements) {
                             photos.add(photoElement.getAttribute("src"));
                         }
                         reviewData.put("photos", String.join(",", photos));
@@ -140,19 +156,7 @@ public class StoreApiController {
                     blogReviewList.add(reviewData);
                 }
         
-                // 카카오사진
-
-                List<WebElement> listPhotoElements = new ArrayList<>();
-                try {
-                    wait.until(ExpectedConditions.presenceOfElementLocated(By.className("link_photo"))); // 요소가 로드될 때까지 대기
-                    listPhotoElements = driver.findElements(By.className("link_photo"));
-                } catch (NoSuchElementException | TimeoutException e) {
-                }
-                List<String> photoHrefList = new ArrayList<>();
-                for (WebElement listPhotoElement : listPhotoElements) {
-                    String href = listPhotoElement.getAttribute("href");
-                    photoHrefList.add(href);
-                }
+           
         
                 // 전화번호
                 List<WebElement> numberElements = new ArrayList<>();
@@ -242,8 +246,8 @@ public class StoreApiController {
                 if (!kakaoReviewList.isEmpty()) {
                     result.put("kakaoReviewList", kakaoReviewList);
                 }
-                if (!photoHrefList.isEmpty()) {
-                    result.put("photoHrefList", photoHrefList); // 사진 href 리스트를 결과에 추가
+                if (!photoSrcList.isEmpty()) {
+                    result.put("photoSrcList", photoSrcList); // 사진 href 리스트를 결과에 추가
                 }
                 if (numberList != null) {
                     result.put("numberList", numberList);
