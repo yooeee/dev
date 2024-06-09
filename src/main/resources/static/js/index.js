@@ -1,7 +1,6 @@
 let currentPage = 1;
 const itemsPerPage = 10;
 let cluster = new H_Cluster(map, { layerName: 'cluster' });
-
 // 팝업 요소 가져오기
 let container = document.getElementById('popup');
 let content = document.getElementById('popup-content');
@@ -76,7 +75,18 @@ function setInitEvent() {
 
     // 리셋버튼 이벤트
     document.getElementById('resetBtn').addEventListener('click', function () {
-        // TODO 조건 리셋
+         // type1의 선택 값을 "all"로 설정
+    document.getElementById('type1').value = "all";
+    
+    // type2의 선택 값을 초기화
+    const type2 = document.getElementById('type2');
+    type2.innerHTML = '<option value="all" disabled selected>시/군/구</option>';
+
+    // 필요한 경우 다른 필터 및 검색어 초기화
+    document.getElementById('keyword').value = '';
+    document.querySelectorAll('.checkbox-group input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
     });
 
     // type1 이벤트
@@ -286,13 +296,19 @@ function addPopupToMap(items, coordinates) {
     newContainer.className = 'ol-popup';
 
     let newContent = document.createElement('div');
+    newContent.className = 'popup-container';
+
     items.forEach(item => {
         let itemDiv = document.createElement('div');
-        itemDiv.innerHTML = `<strong>${item.name}</strong>`;
-        newContent.appendChild(itemDiv);
+        itemDiv.className = 'popup-item';
+        itemDiv.innerHTML = `
+            <div class="popup-title">${item.name}</div>
+            <div class="popup-address">${item.doro}</div>
+        `;
         itemDiv.addEventListener('click', () => {
             fetchAdditionalInfo(item);
         });
+        newContent.appendChild(itemDiv);
     });
 
     newContainer.appendChild(newContent);
@@ -304,6 +320,8 @@ function addPopupToMap(items, coordinates) {
 
     map.addOverlay(newOverlay);
     newOverlay.setPosition(coordinates);
+
+
 }
 
 function updatePagination(totalCount) {

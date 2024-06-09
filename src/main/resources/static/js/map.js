@@ -57,7 +57,7 @@ function setMapEvent() {
     map.on('moveend', event => {
 
       const zoomLevel = map.getView().getZoom();
-      if (document.getElementById('type1') != my) {
+      if (document.getElementById('type1') != 'my') {
         let popUps = document.getElementsByClassName('ol-popup');
         if (zoomLevel < 10) {
           for (let i = 0; i < popUps.length; i++) {
