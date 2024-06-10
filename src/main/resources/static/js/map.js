@@ -31,33 +31,26 @@ window.onload = function () {
 };
 
 function initMap() {
- 
-
-    document.getElementById("address-info").addEventListener("click", function() {
-      checkGeolocationPermissionAndUpdate();
-    });
+  document.getElementById("address-info").addEventListener("click", function () {
     checkGeolocationPermissionAndUpdate();
-
- 
+  });
+  checkGeolocationPermissionAndUpdate();
 }
 
 function setMapEvent() {
-
   // 지도 클릭 이벤트 설정
   map.on('singleclick', function (e) {
     map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
       // 해당 피처의 데이터를 사용하여 추가 정보 가져오기
       if (layer === resultLayer) {
-        const item = feature.getProperties();
-        fetchAdditionalInfo(item);
-      }
+        const items = feature.get('items');
+        addPopupToMap(items, feature.getGeometry().getCoordinates());
+    }
     });
 
-
     map.on('moveend', event => {
-
       const zoomLevel = map.getView().getZoom();
-      if (document.getElementById('type1') != 'my') {
+      if (document.getElementById('type1').value != 'my') {
         let popUps = document.getElementsByClassName('ol-popup');
         if (zoomLevel < 14) {
           for (let i = 0; i < popUps.length; i++) {
@@ -71,11 +64,7 @@ function setMapEvent() {
       }
     });
   });
-
-
-
 }
-
 function checkGeolocationPermissionAndUpdate() {
   navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
     if (result.state === 'granted') {

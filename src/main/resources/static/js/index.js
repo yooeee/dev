@@ -8,6 +8,8 @@ let closer = document.getElementById('popup-closer');
 // 현재 아이템을 저장할 변수
 let currentItem = null;
 
+let currentPopup = null; // 현재 팝업을 저장할 변수
+
 // 팝업 클릭 이벤트
 content.onclick = function () {
     if (currentItem) {
@@ -42,8 +44,6 @@ function initIndex() {
      * 1-1 권한 승인 : 내 위치 반경 1미터 조건 검색적용
      * 1-2 권한 거부 : 한반도 전체 영역 표시, 
      */
-
-
 }
 
 function setInitEvent() {
@@ -75,18 +75,18 @@ function setInitEvent() {
 
     // 리셋버튼 이벤트
     document.getElementById('resetBtn').addEventListener('click', function () {
-         // type1의 선택 값을 "all"로 설정
-    document.getElementById('type1').value = "all";
-    
-    // type2의 선택 값을 초기화
-    const type2 = document.getElementById('type2');
-    type2.innerHTML = '<option value="all" disabled selected>시/군/구</option>';
+        // type1의 선택 값을 "all"로 설정
+        document.getElementById('type1').value = "all";
 
-    // 필요한 경우 다른 필터 및 검색어 초기화
-    document.getElementById('keyword').value = '';
-    document.querySelectorAll('.checkbox-group input[type="checkbox"]').forEach(checkbox => {
-        checkbox.checked = false;
-    });
+        // type2의 선택 값을 초기화
+        const type2 = document.getElementById('type2');
+        type2.innerHTML = '<option value="all" disabled selected>시/군/구</option>';
+
+        // 필요한 경우 다른 필터 및 검색어 초기화
+        document.getElementById('keyword').value = '';
+        document.querySelectorAll('.checkbox-group input[type="checkbox"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
     });
 
     // type1 이벤트
@@ -129,8 +129,6 @@ function setInitEvent() {
 }
 
 function getSearchList(page) {
-
-
     const keyword = document.getElementById('keyword').value;
     const type1 = document.getElementById('type1').value;
     const type2 = document.getElementById('type2').value;
@@ -169,7 +167,6 @@ function getSearchList(page) {
                 // 지도에 추가된 모든 오버레이를 제거
                 map.getOverlays().clear();
 
-
                 // 반경조회
                 if (type1 == 'my') {
                     // type2를 숫자로 변환
@@ -193,12 +190,12 @@ function getSearchList(page) {
                     let searchItem = clone.querySelector('.search-item');
 
                     // 검색 항목에 데이터 설정
-                    if(type1 != 'my'){
+                    if (type1 != 'my') {
                         searchItem.querySelector('.restaurant-name').textContent = item.name;
-                    } else if(type1== 'my'){
+                    } else if (type1 == 'my') {
                         searchItem.querySelector('.restaurant-name').textContent = item.name + '(' + item.distance + ' M)';
                     }
-                    
+
                     searchItem.querySelector('.restaurant-address').textContent = item.doro;
 
                     // 클릭 이벤트 추가
@@ -224,11 +221,12 @@ function getSearchList(page) {
 
 // 지도 이동 함수
 function moveToMapCoordinates(item) {
-
     // OpenLayers 예시
     let view = map.getView();
     view.setCenter([parseFloat(item.lon), parseFloat(item.lat)]);
     view.setZoom(18);
+      // 마커 아이템을 배열로 전달하여 팝업 띄우기
+    addPopupToMap([item], [parseFloat(item.lon), parseFloat(item.lat)]);
 }
 
 function displayMarker(results) {
@@ -284,14 +282,13 @@ function displayMarker(results) {
             });
         }
     }
-
-    coordinatesMap.forEach((items, coordinatesKey) => {
-        const [lon, lat] = coordinatesKey.split(',').map(parseFloat);
-        addPopupToMap(items, [lon, lat]);
-    });
 }
-
 function addPopupToMap(items, coordinates) {
+    // 기존 팝업이 있으면 제거
+    if (currentPopup) {
+        map.removeOverlay(currentPopup);
+    }
+
     let newContainer = document.createElement('div');
     newContainer.className = 'ol-popup';
 
@@ -321,7 +318,13 @@ function addPopupToMap(items, coordinates) {
     map.addOverlay(newOverlay);
     newOverlay.setPosition(coordinates);
 
+    currentPopup = newOverlay; // 현재 팝업 업데이트
 
+    // 팝업 닫기 이벤트 추가
+    newContainer.addEventListener('click', () => {
+        map.removeOverlay(newOverlay);
+        currentPopup = null; // 팝업 제거 후 변수 초기화
+    });
 }
 
 function updatePagination(totalCount) {
@@ -407,16 +410,15 @@ function toggleDropdown(id, button) {
 }
 
 // 추가 정보 요청 함수
-
 function fetchAdditionalInfo(item) {
     const data = {
-        seq : item.seq,
-        category : item.category,
+        seq: item.seq,
+        category: item.category,
         name: item.name,
         doro: item.doro,
-        jibeon : item.jibeon
+        jibeon: item.jibeon
     }
-    
+
     let popupX = document.body.offsetWidth / 2 - 1110 / 2;
     popupX += window.screenLeft;
     let popupY = window.screen.height / 2 - 762 / 2;
@@ -425,15 +427,4 @@ function fetchAdditionalInfo(item) {
         '_blank',
         'toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=1350, height=762, left=' + popupX + ', top=' + popupY
     );
-
-    
-
-    // fetch('/api/detail?' + new URLSearchParams(data).toString(), {
-    //     method: 'GET',
-    // })
-    //     .then(data => {
-    //         console.log('Additional Info:', data);
-    //         // 추가 정보를 처리하는 코드를 여기에 추가합니다
-    //     })
-    //     .catch(error => console.error('There was a problem with your fetch operation:', error));
 }
