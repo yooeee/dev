@@ -221,11 +221,13 @@ function getSearchList(page) {
 
 // 지도 이동 함수
 function moveToMapCoordinates(item) {
-    // OpenLayers 예시
     let view = map.getView();
-    view.setCenter([parseFloat(item.lon), parseFloat(item.lat)]);
-    view.setZoom(18);
-      // 마커 아이템을 배열로 전달하여 팝업 띄우기
+    // animate 메서드를 사용하여 좌표 및 줌 레벨 설정
+    view.animate({
+        center: [parseFloat(item.lon), parseFloat(item.lat)],
+        zoom: 18,
+        duration: 1000  // 애니메이션 지속 시간 (밀리초)
+    });
     addPopupToMap([item], [parseFloat(item.lon), parseFloat(item.lat)]);
 }
 
@@ -282,9 +284,15 @@ function displayMarker(results) {
             });
         }
     }
+    //  // 마커에 마우스 오버 이벤트 추가
+    //  map.getViewport().addEventListener('mousemove', function (evt) {
+    //     const pixel = map.getEventPixel(evt);
+    //     const hit = map.hasFeatureAtPixel(pixel);
+    //     map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+    // });
 }
 function addPopupToMap(items, coordinates) {
-    // 기존 팝업이 있으면 제거
+    // 기존 팝업이 있으면 제거  
     if (currentPopup) {
         map.removeOverlay(currentPopup);
     }
@@ -294,6 +302,25 @@ function addPopupToMap(items, coordinates) {
 
     let newContent = document.createElement('div');
     newContent.className = 'popup-container';
+
+    // 닫기 버튼 추가
+    let closeButton = document.createElement('button');
+    closeButton.className = 'popup-closer';
+    closeButton.textContent = 'X';
+    closeButton.style.position = 'absolute';
+    closeButton.style.top = '10px';
+    closeButton.style.right = '10px';
+    closeButton.style.backgroundColor = 'white';
+    closeButton.style.border = 'none';
+    closeButton.style.cursor = 'pointer';
+
+    // 닫기 버튼 클릭 이벤트 추가
+    closeButton.addEventListener('click', () => {
+        map.removeOverlay(newOverlay);
+        currentPopup = null; // 팝업 제거 후 변수 초기화
+    });
+
+    newContainer.appendChild(closeButton);
 
     items.forEach(item => {
         let itemDiv = document.createElement('div');
@@ -319,13 +346,8 @@ function addPopupToMap(items, coordinates) {
     newOverlay.setPosition(coordinates);
 
     currentPopup = newOverlay; // 현재 팝업 업데이트
-
-    // 팝업 닫기 이벤트 추가
-    newContainer.addEventListener('click', () => {
-        map.removeOverlay(newOverlay);
-        currentPopup = null; // 팝업 제거 후 변수 초기화
-    });
 }
+
 
 function updatePagination(totalCount) {
     const totalPages = Math.ceil(totalCount / itemsPerPage);

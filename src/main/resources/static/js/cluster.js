@@ -35,17 +35,17 @@ class H_Cluster {
             return false;
         }
 
-        
+
         this.dataVectorSource = this._createDataVectorSource(datas);
-    
+
         this.sggVectorSource = this._createSggVectorSource(sggDatas);
 
         this.sdVectorSource = this._createSdVectorSource(sdDatas);
-    
-       
+
+
 
         this._updateCluster();
-       
+
     }
 
     _createSdVectorSource(datas) {
@@ -80,7 +80,7 @@ class H_Cluster {
             }
 
             if (sd.lon && sd.lat) {
-                
+
                 const coordinate = ol.proj.transform([parseFloat(sd.lon), parseFloat(sd.lat)], 'EPSG:4326', 'EPSG:3857');
                 const feature = new ol.Feature({
                     geometry: new ol.geom.Point(coordinate),
@@ -168,50 +168,45 @@ class H_Cluster {
     }
 
     _createDataVectorSource(datas) {
-    let vectorSource = new ol.source.Vector();
-    datas.forEach(data => {
-        // 좌표를 EPSG:3857으로 변환
-        const coordinate = ol.proj.fromLonLat([parseFloat(data.lon), parseFloat(data.lat)]);
-        const feature = new ol.Feature({
-            geometry: new ol.geom.Point(coordinate),
-            name: 'marker',
-            lon: data.lon,
-            lat: data.lat,
-            bdCode: data.admCode,
-            properties: '',
+        let vectorSource = new ol.source.Vector();
+        datas.forEach(data => {
+            // 좌표를 EPSG:3857으로 변환
+            const coordinate = ol.proj.fromLonLat([parseFloat(data.lon), parseFloat(data.lat)]);
+            const feature = new ol.Feature({
+                geometry: new ol.geom.Point(coordinate),
+                name: 'marker',
+                lon: data.lon,
+                lat: data.lat,
+                bdCode: data.admCode,
+                properties: '',
+            });
+
+            // 마커 이미지 설정
+            feature.setStyle(new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1], // 이미지의 앵커 위치
+                    src: '/img/marker.png', // 마커 이미지 경로
+                    scale: 0.05 // 이미지 크기 조정 (필요에 따라 조정 가능)
+                }),
+            }));
+
+            vectorSource.addFeature(feature);
         });
-
-        // 마커 이미지 설정
-        feature.setStyle(new ol.style.Style({
-            image: new ol.style.Icon({
-                anchor: [0.5, 1], // 이미지의 앵커 위치
-                src: '/img/marker.png', // 마커 이미지 경로
-                scale: 0.05 // 이미지 크기 조정 (필요에 따라 조정 가능)
-            }),
-        }));
-
-        vectorSource.addFeature(feature);
-    });
-    return vectorSource;
-}
+        return vectorSource;
+    }
 
 
     _updateCluster() {
 
         const zoomLevel = this.map.getView().getZoom();
-        if(this.sdVectorSource != null && this.sggVectorSource != null && document.getElementById('type1').value != 'my'){
+        if (this.sdVectorSource != null && this.sggVectorSource != null && document.getElementById('type1').value != 'my') {
             if (zoomLevel < this.sdLev) {
                 this.layer.setSource(this.sdVectorSource);
-                let popUps = document.getElementsByClassName('ol-popup'); // 클래스 명 앞에 '.'을 제거합니다.
 
-                for (let i = 0; i < popUps.length; i++) {
-                    popUps[i].style.display = 'none';
-                }
 
-                
             } else if (zoomLevel <= this.sggLev) {
                 this.layer.setSource(this.sggVectorSource);
-                
+
             } else if (this.dataVectorSource) {
                 this.layer.setSource(this.dataVectorSource);
             } else {
@@ -221,7 +216,7 @@ class H_Cluster {
         // if(document.getElementById('type1').value == 'my'){
         //     this.layer.setSource(this.dataVectorSource);
         // }
-       
+
     }
 
     showLayer(name) {

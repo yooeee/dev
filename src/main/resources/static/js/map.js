@@ -36,7 +36,6 @@ function initMap() {
   });
   checkGeolocationPermissionAndUpdate();
 }
-
 function setMapEvent() {
   // 지도 클릭 이벤트 설정
   map.on('singleclick', function (e) {
@@ -45,54 +44,48 @@ function setMapEvent() {
       if (layer === resultLayer) {
         const items = feature.get('items');
         addPopupToMap(items, feature.getGeometry().getCoordinates());
-    }
-    });
-
-    map.on('moveend', event => {
-      const zoomLevel = map.getView().getZoom();
-      if (document.getElementById('type1').value != 'my') {
-        let popUps = document.getElementsByClassName('ol-popup');
-        if (zoomLevel < 14) {
-          for (let i = 0; i < popUps.length; i++) {
-            popUps[i].style.display = 'none';
-          }
-        } else {
-          for (let i = 0; i < popUps.length; i++) {
-            popUps[i].style.display = '';
-          }
-        }
       }
     });
   });
+
+  // 마커 위에서 커서가 클릭 모양으로 바뀌도록 설정
+  map.on('pointermove', function (e) {
+    const pixel = map.getEventPixel(e.originalEvent);
+    const hit = map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+      return layer === resultLayer;
+    });
+    map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+  });
 }
+
 function checkGeolocationPermissionAndUpdate() {
   navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
     if (result.state === 'granted') {
       console.log('위치 권한이 허락되었습니다.');
       updateLocation(map, 1500);
-        let selectElement = document.getElementById('type1');
-        let selectElement2 = document.getElementById('type2');
-        let options = selectElement.options;
-        let options2 = selectElement2.options;
+      let selectElement = document.getElementById('type1');
+      let selectElement2 = document.getElementById('type2');
+      let options = selectElement.options;
+      let options2 = selectElement2.options;
 
-        for (var i = 0; i < options.length; i++) {
-          if (options[i].value === 'my') {
-            selectElement.selectedIndex = i;
-            break;
-          }
+      for (var i = 0; i < options.length; i++) {
+        if (options[i].value === 'my') {
+          selectElement.selectedIndex = i;
+          break;
         }
+      }
 
-        for (var i = 0; i < options2.length; i++) {
-          if (options[i].value === '1500') {
-            selectElement.selectedIndex = i;
-            break;
-          }
+      for (var i = 0; i < options2.length; i++) {
+        if (options[i].value === '1500') {
+          selectElement.selectedIndex = i;
+          break;
         }
-        
-        // 1초(1000밀리초) 후에 getSearchList(1) 함수 호출
-setTimeout(function() {
-  getSearchList(1);
-}, 500);
+      }
+
+      // 1초(1000밀리초) 후에 getSearchList(1) 함수 호출
+      setTimeout(function () {
+        getSearchList(1);
+      }, 500);
 
     } else if (result.state === 'prompt') {
       console.log('위치 권한 요청 중입니다.');
@@ -117,7 +110,7 @@ setTimeout(function() {
             break;
           }
         }
-        
+
         getSearchList(1);
       });
     } else if (result.state === 'denied') {
@@ -178,7 +171,7 @@ function updateLocation(map, radius) {
 
       console.log(myCoords);
       fetchAddress(myCoords);
-     
+
     }, function (error) {
       console.error("Geolocation error: ", error);
     });
@@ -199,8 +192,8 @@ function fetchAddress(coords) {
 
 function removeLayer(name) {
   map.getAllLayers().forEach(layer => {
-      if (layer && layer.get('name') == name) {
-          map.removeLayer(layer);
-      }
+    if (layer && layer.get('name') == name) {
+      map.removeLayer(layer);
+    }
   });
 }
