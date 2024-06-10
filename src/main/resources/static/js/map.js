@@ -59,7 +59,7 @@ function setMapEvent() {
       const zoomLevel = map.getView().getZoom();
       if (document.getElementById('type1') != 'my') {
         let popUps = document.getElementsByClassName('ol-popup');
-        if (zoomLevel < 10) {
+        if (zoomLevel < 14) {
           for (let i = 0; i < popUps.length; i++) {
             popUps[i].style.display = 'none';
           }
